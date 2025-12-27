@@ -1,0 +1,106 @@
+# AstroNope - Daily Cosmic Ritual
+
+See PRODUCT_DECISION.md for Phase 1 (Simplicity First) and product principles.
+
+**When you don't want to explain — blame the universe.**
+
+A fun, entertainment-first app that delivers one deterministic cosmic excuse per day. Your daily ritual for cosmic accountability avoidance.
+
+## Features
+
+- 🌙 **One message per day** - Same excuse throughout the day (daily ritual)
+- ✨ **Zodiac flavor transformation** - Apply zodiac tone to your message (optional)
+- 📋 One-tap copy to clipboard
+- 📤 Native share functionality
+- 🎨 Beautiful cosmic-themed UI
+- 📱 Mobile-responsive PWA
+- ⚡ Zero friction - no login, no onboarding, no questions
+
+## Core Mechanics
+
+**Daily Ritual System:**
+
+- Open app → Get your daily AstroNope
+- Same message all day (deterministic, based on date + browser fingerprint)
+- New message automatically at midnight (timezone-aware)
+
+**Zodiac Transform (Optional):**
+
+- Select zodiac sign → Message tone changes to match sign's energy
+- Message content adapts, flavor tag appears (e.g., "✨ Scorpio energy")
+- Zodiac is strategic flavor choice, not identity requirement
+
+## Quick Start
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Run the development server:
+
+```bash
+npm run dev
+```
+
+3. Open your browser to `http://localhost:3004`
+
+## Build for Production
+
+```bash
+npm run build
+```
+
+The built files will be in the `dist` directory.
+
+## Tech Stack
+
+- React 18
+- Vite
+- Vanilla CSS (no dependencies)
+- Service Worker with daily cache versioning
+- Web Share API for native sharing
+- localStorage for daily persistence
+
+## Content System
+
+- **500+ curated pop-astrology reasons** (aiReasons.json)
+- Deterministic generation using seeded RNG (mulberry32)
+- Three-part composition: SETUP + REASON + PUNCHLINE
+- Tone-based matching for zodiac flavors
+- No AI API calls - all client-side generation
+
+## Mobile & PWA Support
+
+The app is fully responsive and installable as PWA. Service Worker provides:
+
+- Offline functionality
+- Daily cache versioning (auto-update on new version)
+- Aggressive cache-busting for instant updates
+
+## Deployment
+
+The app is deployed on Vercel:
+
+- **Production URL:** https://my-app-nine-alpha-34.vercel.app
+- **Inspect/Manage:** https://vercel.com/rusmirbec-3391s-projects/my-app
+
+**Deploy command:**
+
+```bash
+npm run build && npx vercel --prod
+```
+
+Version is tracked in `index.html` meta tag for cache invalidation.
+
+To redeploy after changes:
+
+```bash
+npm run build
+vercel --prod --yes
+```
+
+## License
+
+MIT

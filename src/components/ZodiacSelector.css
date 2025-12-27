@@ -1,0 +1,149 @@
+.zodiac-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.zodiac-modal {
+  background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+  border: 2px solid rgba(138, 43, 226, 0.3);
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(138, 43, 226, 0.2);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.zodiac-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.zodiac-header h3 {
+  margin: 0;
+  color: #fff;
+  font-size: 1.4rem;
+}
+
+.zodiac-close {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.zodiac-close:hover {
+  background: rgba(138, 43, 226, 0.2);
+  color: #fff;
+}
+
+.zodiac-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 500px) {
+  .zodiac-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.zodiac-button {
+  background: rgba(138, 43, 226, 0.1);
+  border: 2px solid rgba(138, 43, 226, 0.2);
+  border-radius: 12px;
+  padding: 15px;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.zodiac-button:hover {
+  background: rgba(138, 43, 226, 0.2);
+  border-color: rgba(138, 43, 226, 0.5);
+  transform: translateY(-2px);
+}
+
+.zodiac-button.selected {
+  background: rgba(138, 43, 226, 0.4);
+  border-color: #8a2be2;
+  box-shadow: 0 0 20px rgba(138, 43, 226, 0.3);
+}
+
+.zodiac-symbol {
+  font-size: 1.8rem;
+  display: block;
+}
+
+.zodiac-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.zodiac-clear {
+  width: 100%;
+  padding: 12px;
+  background: rgba(200, 50, 50, 0.2);
+  border: 2px solid rgba(200, 50, 50, 0.3);
+  border-radius: 10px;
+  color: #ff9999;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.zodiac-clear:hover {
+  background: rgba(200, 50, 50, 0.3);
+  border-color: rgba(200, 50, 50, 0.5);
+}

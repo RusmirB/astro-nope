@@ -1,0 +1,118 @@
+.install-prompt {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  animation: slideUp 0.3s ease-out;
+  max-width: 90%;
+  width: 400px;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.install-prompt-content {
+  background: rgba(20, 20, 35, 0.98);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.install-prompt-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.install-prompt-text {
+  flex: 1;
+  color: white;
+}
+
+.install-prompt-text strong {
+  display: block;
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.install-prompt-text p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.install-prompt-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.install-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.install-btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.install-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.install-btn-dismiss {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 8px 12px;
+  min-width: 36px;
+}
+
+.install-btn-dismiss:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 480px) {
+  .install-prompt {
+    width: calc(100% - 40px);
+    bottom: 10px;
+  }
+
+  .install-prompt-content {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .install-prompt-icon {
+    font-size: 1.5rem;
+  }
+
+  .install-prompt-text strong {
+    font-size: 0.9rem;
+  }
+
+  .install-prompt-text p {
+    font-size: 0.8rem;
+  }
+}
+
