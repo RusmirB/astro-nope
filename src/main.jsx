@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
+import { Analytics } from "@vercel/analytics/react";
 
 // Check for version updates and force refresh if needed
 let updateChecked = false;
@@ -103,5 +104,6 @@ if ("serviceWorker" in navigator) {
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <App />
+    <Analytics />
   </React.StrictMode>
 );
