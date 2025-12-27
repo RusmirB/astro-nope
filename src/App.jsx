@@ -516,7 +516,7 @@ function App() {
                 </div>
               )}
 
-              <div className="excuse-brand">astronope.app</div>
+              <div className="excuse-brand">astronope.com</div>
             </div>
           )}
         </div>
