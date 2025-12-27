@@ -526,12 +526,10 @@ function App() {
           <button
             className="btn-zodiac-flavor"
             onClick={() => setShowZodiacSelector(true)}
-            disabled={
-              isLoading || !excuse || (isDailyMessage && rerollsLeft === 0)
-            }
+            disabled={isLoading || !excuse || zodiacChangesLeft === 0}
             title={
-              isDailyMessage && rerollsLeft === 0
-                ? "No more cosmic choices today"
+              zodiacChangesLeft === 0
+                ? "No more zodiac changes today"
                 : selectedZodiac
                 ? `Change zodiac (${selectedZodiac})`
                 : "Blame my zodiac ✨"
@@ -540,6 +538,11 @@ function App() {
             {selectedZodiac
               ? `Change zodiac (${selectedZodiac}) ✨`
               : "Blame my zodiac ✨"}
+            {zodiacChangesLeft > 0 && (
+              <span style={{ marginLeft: 8, fontSize: "0.9em", color: "#aaa" }}>
+                {zodiacChangesLeft} left
+              </span>
+            )}
           </button>
         </div>
 
