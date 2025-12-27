@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import "./App.css";
-import { generateExcuse, generateZodiacExcuse } from "./services/excuseService";
+import {
+  generateExcuse,
+  generateZodiacExcuse,
+  generatePersonalizedExcuse,
+} from "./services/excuseService";
 import { getDailyExcuse } from "./services/dailyExcuseService";
 import InstallPrompt from "./components/InstallPrompt";
 import ZodiacSelector from "./components/ZodiacSelector";
@@ -33,6 +37,7 @@ import { getSelectedZodiac, flavorExcuse } from "./utils/zodiacTones";
 // Phase 1: Zero input, zero identity, zero friction
 function App() {
   const [excuse, setExcuse] = useState("");
+  const [baseSeed, setBaseSeed] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [toast, setToast] = useState("");
   const [favoriteStatus, setFavoriteStatus] = useState(false);
@@ -51,9 +56,17 @@ function App() {
   const [streak, setStreak] = useState(0);
   const [todayDate, setTodayDate] = useState("");
 
+  const getBaseExcuse = () => {
+    if (isDailyMessage && baseSeed !== null) {
+      return generatePersonalizedExcuse(baseSeed);
+    }
+    return excuse;
+  };
+
   const getFlavoredExcuse = () => {
-    if (!selectedZodiac) return excuse;
-    return flavorExcuse(excuse, selectedZodiac);
+    const base = getBaseExcuse();
+    if (!selectedZodiac) return base;
+    return flavorExcuse(base, selectedZodiac);
   };
 
   // Calculate and update streak
@@ -119,7 +132,8 @@ function App() {
           astroSign: null,
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         });
-        setExcuse(result.excuse);
+        setBaseSeed(result.seed);
+        setExcuse(generatePersonalizedExcuse(result.seed));
         setIsDailyMessage(true);
         setIsLoading(false);
         trackNewExcuse();
@@ -173,14 +187,15 @@ function App() {
   };
 
   const handleToggleFavorite = () => {
-    if (!excuse) return;
+    const current = getBaseExcuse();
+    if (!current) return;
 
     if (favoriteStatus) {
-      removeFavorite(excuse);
+      removeFavorite(current);
       showToast("Removed from favorites");
       trackFavorite("remove");
     } else {
-      addFavorite(excuse);
+      addFavorite(current);
       showToast("Added to favorites! ⭐");
       trackFavorite("add");
     }
@@ -282,7 +297,7 @@ function App() {
       try {
         // Try to share as image if possible
         try {
-          const imageBlob = await generateExcuseImage(excuse);
+          const imageBlob = await generateExcuseImage(getBaseExcuse());
           if (
             navigator.canShare &&
             navigator.canShare({
@@ -296,7 +311,7 @@ function App() {
             });
             await navigator.share({
               title: "AstroNope",
-              text: excuse,
+              text: getBaseExcuse(),
               files: [file],
             });
             trackShare("image");
@@ -310,7 +325,7 @@ function App() {
         // Fallback to text share
         await navigator.share({
           title: "AstroNope",
-          text: excuse,
+          text: getBaseExcuse(),
         });
         trackShare("text");
         maybeShowBrandCaption();
@@ -560,21 +575,21 @@ function App() {
           <button
             className="btn btn-secondary"
             onClick={handleCopy}
-            disabled={isLoading || !excuse}
+            disabled={isLoading || !getBaseExcuse()}
           >
             Copy
           </button>
           <button
             className="btn btn-secondary"
             onClick={handleShare}
-            disabled={isLoading || !excuse}
+            disabled={isLoading || !getBaseExcuse()}
           >
             Share
           </button>
           <button
             className={`btn btn-favorite ${favoriteStatus ? "favorited" : ""}`}
             onClick={handleToggleFavorite}
-            disabled={isLoading || !excuse}
+            disabled={isLoading || !getBaseExcuse()}
             title={
               favoriteStatus ? "Remove from favorites" : "Add to favorites"
             }
