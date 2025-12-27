@@ -1,8 +1,11 @@
 # AstroNope - Daily Cosmic Ritual
 
-See PRODUCT_DECISION.md for Phase 1 (Simplicity First) and product principles.
+> 🌐 **Live:** [astro-nope.com](https://astro-nope.com)  
+> 📦 **GitHub:** [RusmirB/astro-nope](https://github.com/RusmirB/astro-nope)
 
 **When you don't want to explain — blame the universe.**
+
+See [docs/PRODUCT_DECISION.md](docs/PRODUCT_DECISION.md) for Phase 1 (Simplicity First) and product principles.
 
 A fun, entertainment-first app that delivers one deterministic cosmic excuse per day. Your daily ritual for cosmic accountability avoidance.
 
@@ -81,25 +84,28 @@ The app is fully responsive and installable as PWA. Service Worker provides:
 
 ## Deployment
 
-The app is deployed on Vercel:
+The app is deployed on Vercel with custom domain:
 
-- **Production URL:** https://my-app-nine-alpha-34.vercel.app
-- **Inspect/Manage:** https://vercel.com/rusmirbec-3391s-projects/my-app
+- **Production URL:** [astro-nope.com](https://astro-nope.com)
+- **Vercel Dashboard:** [my-app project](https://vercel.com/rusmirbec-3391s-projects/my-app)
+- **GitHub Repo:** [RusmirB/astro-nope](https://github.com/RusmirB/astro-nope)
 
-**Deploy command:**
+Vercel automatically deploys on push to `main` branch.
 
-```bash
-npm run build && npx vercel --prod
-```
-
-Version is tracked in `index.html` meta tag for cache invalidation.
-
-To redeploy after changes:
+**Manual deployment:**
 
 ```bash
 npm run build
 vercel --prod --yes
 ```
+
+Version is tracked in `index.html` meta tag for cache invalidation.
+
+## Documentation
+
+- [Deployment Guide](docs/DEPLOY.md)
+- [Product Decisions](docs/PRODUCT_DECISION.md)
+- [Style Guide](docs/STYLE_GUIDE.md)
 
 ## License
 
