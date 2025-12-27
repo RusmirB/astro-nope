@@ -28,7 +28,7 @@ import {
   getFavorites,
 } from "./services/favoritesService";
 import { generateExcuseImage, downloadImage } from "./services/imageService";
-import { getSelectedZodiac, pickFlavorEnding } from "./utils/zodiacTones";
+import { getSelectedZodiac, flavorExcuse } from "./utils/zodiacTones";
 
 // Phase 1: Zero input, zero identity, zero friction
 function App() {
@@ -53,9 +53,7 @@ function App() {
 
   const getFlavoredExcuse = () => {
     if (!selectedZodiac) return excuse;
-    const ending = pickFlavorEnding(selectedZodiac);
-    if (!ending) return excuse;
-    return `${excuse} ${ending}`;
+    return flavorExcuse(excuse, selectedZodiac);
   };
 
   // Calculate and update streak

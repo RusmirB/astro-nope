@@ -146,3 +146,95 @@ export function pickFlavorEnding(sign) {
   const idx = Math.abs(hash) % list.length;
   return list[idx];
 }
+
+// Ruling planet mapping (canonical, simplified for flavor only)
+export const SIGN_RULERS = {
+  aries: "mars",
+  taurus: "venus",
+  gemini: "mercury",
+  cancer: "moon",
+  leo: "sun",
+  virgo: "mercury",
+  libra: "venus",
+  scorpio: "mars", // flavor: intensity (we route via mars)
+  sagittarius: "jupiter",
+  capricorn: "saturn",
+  aquarius: "uranus", // could be saturn; we choose rebel vibe
+  pisces: "neptune", // could be jupiter; we choose fog vibe
+};
+
+// Planet-based flavor phrases that replace the final sentence (no sign names)
+export const PLANET_FLAVORS = {
+  mars: [
+    "Impulse rerouted. Try again tomorrow.",
+    "The universe chose action elsewhere.",
+    "Energy redirected. Tomorrow will do.",
+  ],
+  venus: [
+    "Peace is being protected.",
+    "Comfort takes priority today.",
+    "Soft harmony over hustle.",
+  ],
+  mercury: [
+    "Messages are not landing.",
+    "Signals are misfiring today.",
+    "The lines are crossed. Try tomorrow.",
+  ],
+  moon: [
+    "Feelings go first today.",
+    "A soft pause is in place.",
+    "Quiet tides, try again tomorrow.",
+  ],
+  sun: [
+    "Spotlight is off for today.",
+    "Ego is on a reset.",
+    "Stand down now; return with shine tomorrow.",
+  ],
+  jupiter: [
+    "Expansion postponed. Tomorrow is wider.",
+    "The horizon moved. Try again tomorrow.",
+    "Big plans take a breath today.",
+  ],
+  saturn: [
+    "Boundaries are enforced.",
+    "Rules are winning today.",
+    "Structure says not today.",
+  ],
+  uranus: [
+    "Systems rebelled. Try tomorrow.",
+    "Expect the unexpected, not the yes.",
+    "Disruption in progress. Tomorrow aligns.",
+  ],
+  neptune: [
+    "Reality is blurred.",
+    "Fog day. Tomorrow clears.",
+    "Dream tide says pause.",
+  ],
+};
+
+function deterministicIndexByDate(len) {
+  const today = new Date().toLocaleDateString("en-CA");
+  let hash = 0;
+  for (let i = 0; i < today.length; i++) {
+    hash = (hash << 5) - hash + today.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash) % len;
+}
+
+// Replace the final sentence of the base excuse with a planet flavor phrase
+export function flavorExcuse(baseExcuse, sign) {
+  if (!baseExcuse || !sign) return baseExcuse;
+  const planet = SIGN_RULERS[sign];
+  const list = PLANET_FLAVORS[planet];
+  if (!planet || !list || list.length === 0) return baseExcuse;
+  const ending = list[deterministicIndexByDate(list.length)];
+  // Find the last period and replace the last sentence
+  const lastDot = baseExcuse.lastIndexOf(".");
+  if (lastDot === -1 || lastDot === baseExcuse.length - 1) {
+    // No clear sentence end, append
+    return `${baseExcuse.trim()} ${ending}`;
+  }
+  const first = baseExcuse.slice(0, lastDot + 1).trim();
+  return `${first} ${ending}`;
+}
