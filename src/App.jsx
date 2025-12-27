@@ -43,7 +43,8 @@ function App() {
   const [brandCaptionTimer, setBrandCaptionTimer] = useState(null);
   const [showZodiacSelector, setShowZodiacSelector] = useState(false);
   const [selectedZodiac, setSelectedZodiac] = useState(getSelectedZodiac());
-  const [rerollsLeft, setRerollsLeft] = useState(3);
+  // Uklanjamo reroll logiku
+  const [zodiacChangesLeft, setZodiacChangesLeft] = useState(2);
   const [isDailyMessage, setIsDailyMessage] = useState(true);
   const [showCosmicTransition, setShowCosmicTransition] = useState(false);
   const [showUniverseIntro, setShowUniverseIntro] = useState(true);
@@ -103,15 +104,9 @@ function App() {
   };
 
   useEffect(() => {
-    // Track page view on initial load
     trackPageView("home");
-
-    // Update streak on load
     updateStreak();
-
-    // Hide intro after 2 seconds
     setTimeout(() => setShowUniverseIntro(false), 2000);
-
     (async () => {
       try {
         const result = await getDailyExcuse({
@@ -120,15 +115,25 @@ function App() {
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         });
         setExcuse(result.excuse);
-        setRerollsLeft(result.rerollsLeft || 3);
         setIsDailyMessage(true);
         setIsLoading(false);
         trackNewExcuse();
       } catch (e) {
         console.error("getDailyExcuse error:", e);
-        loadNewExcuse();
+        setExcuse("The universe is having connectivity issues. Try again.");
+        setIsLoading(false);
       }
     })();
+    // Reset zodiac changes on new day
+    const today = new Date().toLocaleDateString("en-CA");
+    const zodiacKey = "astronope_zodiac_changes";
+    const stored = JSON.parse(localStorage.getItem(zodiacKey) || "null");
+    if (!stored || stored.date !== today) {
+      localStorage.setItem(zodiacKey, JSON.stringify({ date: today, left: 2 }));
+      setZodiacChangesLeft(2);
+    } else {
+      setZodiacChangesLeft(stored.left);
+    }
     updateFavoritesList();
   }, []);
 
@@ -156,50 +161,7 @@ function App() {
     }
   };
 
-  const handleReroll = async () => {
-    // Check rerolls from localStorage to ensure accuracy
-    const key = "astronope_daily_excuse";
-    const stored = JSON.parse(localStorage.getItem(key) || "null");
-    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const today = new Date().toLocaleDateString("en-CA", {
-      timeZone: tz,
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
-
-    // Only check reroll count if it's the same day
-    const currentRerollCount =
-      stored?.date === today ? stored?.rerollCount || 0 : 0;
-
-    if (currentRerollCount >= 2) {
-      showToast("No more rerolls for today. See you tomorrow! 🌙");
-      setRerollsLeft(0);
-      return;
-    }
-
-    if (brandCaptionTimer) clearTimeout(brandCaptionTimer);
-    setShowBrandCaption(false);
-    setIsLoading(true);
-    try {
-      // Pass the current reroll count from storage so getDailyExcuse generates new excuse with correct seed
-      const { excuse: newExcuse, rerollsLeft: rolls } = await getDailyExcuse({
-        userId: null,
-        astroSign: null,
-        timezone: tz,
-        useReroll: true,
-        rerollCountOverride: currentRerollCount,
-      });
-      setExcuse(newExcuse);
-      setRerollsLeft(rolls);
-      trackNewExcuse();
-    } catch (error) {
-      console.error("Error rerolling excuse:", error);
-      setExcuse("The cosmos hiccupped. Try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // Uklanjamo handleReroll - nema rerollova
 
   const updateFavoritesList = () => {
     setFavorites(getFavorites());
@@ -392,78 +354,26 @@ function App() {
     setShowZodiacSelector(false);
   };
 
-  const handleZodiacChange = async (zodiacSign) => {
+  const handleZodiacChange = (zodiacSign) => {
     if (!zodiacSign) {
-      // User cleared the selection - just closes
       setSelectedZodiac(null);
       return;
     }
-
-    // Close modal immediately to prevent double-clicks
-    setShowZodiacSelector(false);
-
-    // Trigger cosmic transition animation
-    setShowCosmicTransition(true);
-    setTimeout(() => setShowCosmicTransition(false), 800);
-
-    // Generate new excuse personalized to this zodiac - counts as reroll
-    setIsLoading(true);
-    try {
-      // Get current reroll count from localStorage first
-      const key = "astronope_daily_excuse";
-      const stored = JSON.parse(localStorage.getItem(key) || "null");
-      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const today = new Date().toLocaleDateString("en-CA", {
-        timeZone: tz,
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      });
-
-      // Check if same day, otherwise reset count
-      const currentRerollCount =
-        stored?.date === today ? stored?.rerollCount || 0 : 0;
-
-      // Check if we still have rerolls
-      if (currentRerollCount >= 2) {
-        showToast("No more cosmic choices today. See you tomorrow! 🌙");
-        setRerollsLeft(0);
-        setIsLoading(false);
-        return;
-      }
-
-      const newRerollCount = currentRerollCount + 1;
-
-      // Pass reroll count as seed to generate different messages each time
-      const newExcuse = await generateZodiacExcuse(zodiacSign, newRerollCount);
-      setExcuse(newExcuse);
-      setSelectedZodiac(zodiacSign);
-
-      // Update the stored excuse with new reroll count
-      try {
-        localStorage.setItem(
-          key,
-          JSON.stringify({
-            date: today,
-            excuse: newExcuse,
-            seed: Math.random(), // Zodiac-generated excuse has no seed
-            tz,
-            rerollCount: newRerollCount,
-          })
-        );
-      } catch {}
-
-      // Update UI with new reroll count
-      setRerollsLeft(Math.max(0, 2 - newRerollCount));
-      setIsDailyMessage(true); // Still show as daily message with zodiac flavor
-
-      trackNewExcuse();
-    } catch (error) {
-      console.error("Error generating zodiac excuse:", error);
-      setExcuse("The cosmos is recalibrating. Try again.");
-    } finally {
-      setIsLoading(false);
+    // Proveri broj preostalih promena
+    const today = new Date().toLocaleDateString("en-CA");
+    const zodiacKey = "astronope_zodiac_changes";
+    const stored = JSON.parse(localStorage.getItem(zodiacKey) || "null");
+    let left = stored && stored.date === today ? stored.left : 2;
+    if (left <= 0) {
+      showToast("No more zodiac changes today. See you tomorrow! 🌙");
+      return;
     }
+    left -= 1;
+    setSelectedZodiac(zodiacSign);
+    setZodiacChangesLeft(left);
+    localStorage.setItem(zodiacKey, JSON.stringify({ date: today, left }));
+    // Samo menja ton, ne generiše novu poruku
+    showToast(`Zodiac changed (${zodiacSign})!`);
   };
 
   const handleShareImage = async () => {
