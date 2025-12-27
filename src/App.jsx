@@ -552,7 +552,7 @@ function App() {
               {isDailyMessage && (
                 <div className="daily-label">This is your AstroNope today</div>
               )}
-              <p className="excuse-text">{excuse}</p>
+              <p className="excuse-text">{getFlavoredExcuse()}</p>
               {isDailyMessage && (
                 <div className="daily-hint">No further questions.</div>
               )}
