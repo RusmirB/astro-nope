@@ -578,18 +578,7 @@ function App() {
       </button>
 
       <div className="container">
-        <h1 className="app-title">AstroNope</h1>
-        {streak >= 3 && (
-          <div className="streak-inline">
-            <span className="streak-flame">🔥</span>
-            <span>
-              {streak} day{streak !== 1 ? "s" : ""} streak
-            </span>
-          </div>
-        )}
-        <p className="app-subtitle">
-          When you don't want to explain - blame the universe.
-        </p>
+        {/* ...existing code... */}
 
         <div className="excuse-container">
           {isLoading ? (
