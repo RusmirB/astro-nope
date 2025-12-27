@@ -325,9 +325,12 @@ export function flavorExcuse(baseExcuse, sign) {
 
   // Replace the final sentence with the selected ending
   const lastDot = baseExcuse.lastIndexOf(".");
-  if (lastDot === -1 || lastDot === baseExcuse.length - 1) {
+  if (lastDot === -1) {
+    // No sentence delimiter: append ending
     return `${baseExcuse.trim()} ${selectedEnding}`;
   }
-  const first = baseExcuse.slice(0, lastDot + 1).trim();
+  // Find the start of the last sentence by locating the previous period
+  const prevDot = baseExcuse.lastIndexOf(".", lastDot - 1);
+  const first = baseExcuse.slice(0, prevDot + 1).trim();
   return `${first} ${selectedEnding}`;
 }
