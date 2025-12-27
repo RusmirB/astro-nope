@@ -28,7 +28,7 @@ import {
   getFavorites,
 } from "./services/favoritesService";
 import { generateExcuseImage, downloadImage } from "./services/imageService";
-import { getSelectedZodiac } from "./utils/zodiacTones";
+import { getSelectedZodiac, pickFlavorEnding } from "./utils/zodiacTones";
 
 // Phase 1: Zero input, zero identity, zero friction
 function App() {
@@ -50,6 +50,13 @@ function App() {
   const [showUniverseIntro, setShowUniverseIntro] = useState(true);
   const [streak, setStreak] = useState(0);
   const [todayDate, setTodayDate] = useState("");
+
+  const getFlavoredExcuse = () => {
+    if (!selectedZodiac) return excuse;
+    const ending = pickFlavorEnding(selectedZodiac);
+    if (!ending) return excuse;
+    return `${excuse} ${ending}`;
+  };
 
   // Calculate and update streak
   const updateStreak = () => {
@@ -260,7 +267,7 @@ function App() {
   };
 
   const handleCopy = async () => {
-    const ok = await copyTextRobust(excuse);
+    const ok = await copyTextRobust(getFlavoredExcuse());
     if (ok) {
       showToast("Copied to clipboard! ✨");
       trackCopy();
@@ -372,7 +379,10 @@ function App() {
     setSelectedZodiac(zodiacSign);
     setZodiacChangesLeft(left);
     localStorage.setItem(zodiacKey, JSON.stringify({ date: today, left }));
-    // Samo menja ton, ne generiše novu poruku
+    // Vizuelni "universe updated" efekat
+    setShowCosmicTransition(true);
+    setTimeout(() => setShowCosmicTransition(false), 800);
+    // Samo menja ton prikaza, ne generiše novu poruku
     showToast(`Zodiac changed (${zodiacSign})!`);
   };
 

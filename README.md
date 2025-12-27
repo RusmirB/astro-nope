@@ -106,6 +106,7 @@ Version is tracked in `index.html` meta tag for cache invalidation.
 - [Deployment Guide](docs/DEPLOY.md)
 - [Product Decisions](docs/PRODUCT_DECISION.md)
 - [Style Guide](docs/STYLE_GUIDE.md)
+- [Business Logic](docs/BUSINESS_LOGIC.md)
 
 ## License
 

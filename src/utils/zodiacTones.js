@@ -81,3 +81,68 @@ export const setSelectedZodiac = (sign) => {
     localStorage.setItem("selectedZodiac", sign);
   }
 };
+
+// Flavor-only endings appended to the daily core excuse
+export const SIGN_FLAVOR_ENDINGS = {
+  aries: [
+    "Mars says relax. Try again tomorrow.",
+    "Direct energy fizzled. Reboot tomorrow.",
+  ],
+  taurus: [
+    "Comfort takes priority. Reschedule with the universe.",
+    "The ground says sit. Tomorrow is better.",
+  ],
+  gemini: [
+    "Two minds disagree. Let the cosmos decide tomorrow.",
+    "Too many signals. We'll align later.",
+  ],
+  cancer: [
+    "Moon needs a soft pause. Check back tomorrow.",
+    "Feelings first. The stars can wait.",
+  ],
+  leo: [
+    "Spotlight dimmed for today. Return with flair tomorrow.",
+    "Royal rest day. Audience tomorrow.",
+  ],
+  virgo: [
+    "Details are misaligned. Reschedule with the cosmos.",
+    "System needs tidying. Tomorrow is optimal.",
+  ],
+  libra: [
+    "Balance is off. We'll restore harmony tomorrow.",
+    "Scales say later. Rebalance tomorrow.",
+  ],
+  scorpio: [
+    "Some things are better left unsaid.",
+    "Depth requires silence today. Return tomorrow.",
+  ],
+  sagittarius: [
+    "Aim postponed. Adventure resumes tomorrow.",
+    "Arrow on pause. Try again tomorrow.",
+  ],
+  capricorn: [
+    "Climb resumes tomorrow. Strategy over speed.",
+    "Timelines slip today. Discipline returns tomorrow.",
+  ],
+  aquarius: [
+    "Signals jammed. Refresh the circuit tomorrow.",
+    "Unusual weather in the cloud. Sync tomorrow.",
+  ],
+  pisces: [
+    "Dream tide is out. Swim back tomorrow.",
+    "Drift today. Current returns tomorrow.",
+  ],
+};
+
+export function pickFlavorEnding(sign) {
+  const list = SIGN_FLAVOR_ENDINGS[sign];
+  if (!list || list.length === 0) return null;
+  const today = new Date().toLocaleDateString("en-CA");
+  let hash = 0;
+  for (let i = 0; i < today.length; i++) {
+    hash = (hash << 5) - hash + today.charCodeAt(i);
+    hash |= 0;
+  }
+  const idx = Math.abs(hash) % list.length;
+  return list[idx];
+}
