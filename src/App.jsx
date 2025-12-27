@@ -32,7 +32,11 @@ import {
   getFavorites,
 } from "./services/favoritesService";
 import { generateExcuseImage, downloadImage } from "./services/imageService";
-import { getSelectedZodiac, flavorExcuse } from "./utils/zodiacTones";
+import {
+  getSelectedZodiac,
+  flavorExcuse,
+  ZODIAC_SIGNS,
+} from "./utils/zodiacTones";
 
 // Phase 1: Zero input, zero identity, zero friction
 function App() {
@@ -125,6 +129,20 @@ function App() {
     trackPageView("home");
     updateStreak();
     setTimeout(() => setShowUniverseIntro(false), 2000);
+    // Preload base seed from localStorage to avoid flicker
+    try {
+      const saved = JSON.parse(
+        localStorage.getItem("astronope_daily_seed") || "null"
+      );
+      const today = new Date().toLocaleDateString("en-CA");
+      if (saved && saved.date === today && typeof saved.seed === "number") {
+        setBaseSeed(saved.seed);
+        setExcuse(generatePersonalizedExcuse(saved.seed));
+        setIsDailyMessage(true);
+        setIsLoading(false);
+      }
+    } catch {}
+
     (async () => {
       try {
         const result = await getDailyExcuse({
@@ -134,6 +152,14 @@ function App() {
         });
         setBaseSeed(result.seed);
         setExcuse(generatePersonalizedExcuse(result.seed));
+        // Persist for the rest of the day
+        try {
+          const today = new Date().toLocaleDateString("en-CA");
+          localStorage.setItem(
+            "astronope_daily_seed",
+            JSON.stringify({ date: today, seed: result.seed })
+          );
+        } catch {}
         setIsDailyMessage(true);
         setIsLoading(false);
         trackNewExcuse();
@@ -679,6 +705,31 @@ function App() {
       </div>
     </div>
   );
+}
+
+// QA helper: list flavored outputs for current base across all signs
+if (typeof window !== "undefined") {
+  window.__astroNopeInspect = () => {
+    try {
+      const appRoot = document.getElementById("root");
+      // Find base via a temporary computation using saved seed
+      const saved = JSON.parse(
+        localStorage.getItem("astronope_daily_seed") || "null"
+      );
+      const seed = saved?.seed;
+      const base =
+        typeof seed === "number" ? generatePersonalizedExcuse(seed) : null;
+      const out = ZODIAC_SIGNS.map((s) => ({
+        sign: s.key,
+        text: flavorExcuse(base || "", s.key),
+      }));
+      console.table(out);
+      return out;
+    } catch (e) {
+      console.warn("inspect failed:", e);
+      return [];
+    }
+  };
 }
 
 export default App;
