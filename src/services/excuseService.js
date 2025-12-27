@@ -28,6 +28,29 @@ function containsZodiacMention(text) {
   return ZODIAC_SIGNS.some((sign) => text.includes(sign));
 }
 
+// Avoid mixing multiple cosmic ideas: filter out explicit cosmic terms
+const COSMIC_KEYWORDS = [
+  // planets & bodies
+  "mercury",
+  "venus",
+  "mars",
+  "jupiter",
+  "saturn",
+  "uranus",
+  "neptune",
+  "sun",
+  "moon",
+  // astro jargon to avoid educational tone
+  "transit",
+  "house",
+  "phase",
+];
+
+function containsCosmicMention(text) {
+  const lower = text.toLowerCase();
+  return COSMIC_KEYWORDS.some((kw) => lower.includes(kw));
+}
+
 // Simple seeded RNG
 function mulberry32(seed) {
   return function () {
@@ -220,7 +243,12 @@ function composeExcuse(seed, vibePreference = null, reasonPool = null) {
   // Use provided pool or fallback to all reasons, but always filter out
   // any reasons that explicitly mention zodiac signs to keep core text clean.
   const basePool = reasonPool || AI_REASONS;
-  const reasonsToUse = basePool.filter((r) => !containsZodiacMention(r.text));
+  let reasonsToUse = basePool.filter((r) => !containsZodiacMention(r.text));
+  // Prefer non-cosmic reasons to keep "one idea per message" (cosmic ending only)
+  const nonCosmic = reasonsToUse.filter((r) => !containsCosmicMention(r.text));
+  if (nonCosmic.length > 50) {
+    reasonsToUse = nonCosmic;
+  }
 
   // Try up to 5 times to find a good combination
   while (attempts < 5) {

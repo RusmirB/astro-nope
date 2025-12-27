@@ -249,19 +249,85 @@ function deterministicIndexByDate(len) {
   return Math.abs(hash) % len;
 }
 
+// Generic universe flavor (no specific system)
+export const UNIVERSE_FLAVORS = [
+  "The universe has spoken.",
+  "Cosmic scheduling conflict.",
+  "Universe said not today.",
+  "Stars declined the request.",
+  "Space chose silence today.",
+];
+
+// Numerology flavor: rare, short, and sign-free
+export const NUMEROLOGY_FLAVORS = [
+  "777 went elsewhere.",
+  "The numbers didn’t align.",
+  "11 took the day off.",
+  "3 declined politely.",
+  "7 chose silence today.",
+];
+
+function dateHash() {
+  const today = new Date().toLocaleDateString("en-CA");
+  let hash = 0;
+  for (let i = 0; i < today.length; i++) {
+    hash = (hash << 5) - hash + today.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash) >>> 0;
+}
+
+function pickWeightedCategory() {
+  // Percent mix: 50% planet (astrology default), 25% universe, 15% moon, 10% numerology
+  const h = dateHash() % 100;
+  if (h < 50) return "planet";
+  if (h < 75) return "universe";
+  if (h < 90) return "moon";
+  return "number";
+}
+
+function pickPlanetForToday() {
+  const keys = Object.keys(PLANET_FLAVORS);
+  return keys[deterministicIndexByDate(keys.length)];
+}
+
 // Replace the final sentence of the base excuse with a planet flavor phrase
 export function flavorExcuse(baseExcuse, sign) {
-  if (!baseExcuse || !sign) return baseExcuse;
-  const planet = SIGN_RULERS[sign];
-  const list = PLANET_FLAVORS[planet];
-  if (!planet || !list || list.length === 0) return baseExcuse;
-  const ending = list[deterministicIndexByDate(list.length)];
-  // Find the last period and replace the last sentence
+  if (!baseExcuse) return baseExcuse;
+
+  let selectedEnding = null;
+
+  if (sign) {
+    const planet = SIGN_RULERS[sign];
+    const list = PLANET_FLAVORS[planet];
+    if (planet && list && list.length > 0) {
+      selectedEnding = list[deterministicIndexByDate(list.length)];
+    }
+  } else {
+    const category = pickWeightedCategory();
+    if (category === "planet") {
+      const p = pickPlanetForToday();
+      const list = PLANET_FLAVORS[p];
+      selectedEnding = list[deterministicIndexByDate(list.length)];
+    } else if (category === "moon") {
+      const list = PLANET_FLAVORS["moon"];
+      selectedEnding = list[deterministicIndexByDate(list.length)];
+    } else if (category === "number") {
+      const list = NUMEROLOGY_FLAVORS;
+      selectedEnding = list[deterministicIndexByDate(list.length)];
+    } else {
+      const list = UNIVERSE_FLAVORS;
+      selectedEnding = list[deterministicIndexByDate(list.length)];
+    }
+  }
+
+  if (!selectedEnding) return baseExcuse;
+
+  // Replace the final sentence with the selected ending
   const lastDot = baseExcuse.lastIndexOf(".");
   if (lastDot === -1 || lastDot === baseExcuse.length - 1) {
-    // No clear sentence end, append
-    return `${baseExcuse.trim()} ${ending}`;
+    return `${baseExcuse.trim()} ${selectedEnding}`;
   }
   const first = baseExcuse.slice(0, lastDot + 1).trim();
-  return `${first} ${ending}`;
+  return `${first} ${selectedEnding}`;
 }
