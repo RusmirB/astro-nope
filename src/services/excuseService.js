@@ -217,8 +217,10 @@ function composeExcuse(seed, vibePreference = null, reasonPool = null) {
   let setup, reason, punchline, commonTone;
   let attempts = 0;
 
-  // Use provided pool or fallback to all reasons
-  const reasonsToUse = reasonPool || AI_REASONS;
+  // Use provided pool or fallback to all reasons, but always filter out
+  // any reasons that explicitly mention zodiac signs to keep core text clean.
+  const basePool = reasonPool || AI_REASONS;
+  const reasonsToUse = basePool.filter((r) => !containsZodiacMention(r.text));
 
   // Try up to 5 times to find a good combination
   while (attempts < 5) {
