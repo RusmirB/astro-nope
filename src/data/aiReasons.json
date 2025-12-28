@@ -51,7 +51,7 @@
     { "text": "Status forgot how to update", "tones": ["dry"] },
     { "text": "Mousepad took a sabbatical", "tones": ["playful"] },
     { "text": "Laptop chose meditation", "tones": ["casual"] },
-    { "text": "Calendar invited chaos", "tones": ["playful"] }
+    { "text": "Calendar invited chaos", "tones": ["playful"] },
     { "text": "Mercury rage-quit reality", "tones": ["dry", "playful"] },
     { "text": "Mercury is freelancing again", "tones": ["dry"] },
     { "text": "Mercury ghosted the plans", "tones": ["playful"] },
