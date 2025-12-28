@@ -226,7 +226,7 @@ function App() {
 
   const showToast = (message) => {
     setToast(message);
-    setTimeout(() => setToast(""), 2000);
+    setTimeout(() => setToast(""), 3500);
   };
 
   // Robust copy helper: Clipboard API → selection-based → textarea fallback
