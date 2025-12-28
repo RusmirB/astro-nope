@@ -35,6 +35,7 @@ import { generateExcuseImage, downloadImage } from "./services/imageService";
 import {
   getSelectedZodiac,
   flavorExcuse,
+  splitExcuseWithFlavor,
   ZODIAC_SIGNS,
 } from "./utils/zodiacTones";
 
@@ -70,6 +71,11 @@ function App() {
     const base = getBaseExcuse();
     if (!selectedZodiac) return base;
     return flavorExcuse(base, selectedZodiac);
+  };
+
+  const getSplitExcuse = () => {
+    const base = getBaseExcuse();
+    return splitExcuseWithFlavor(base, selectedZodiac);
   };
 
   // Calculate and update streak
@@ -537,7 +543,12 @@ function App() {
               {isDailyMessage && (
                 <div className="daily-label">This is your AstroNope today</div>
               )}
-              <p className="excuse-text">{getFlavoredExcuse()}</p>
+              <div className="excuse-text">
+                <div className="excuse-core">{getSplitExcuse().core}</div>
+                {getSplitExcuse().flavor && (
+                  <div className="excuse-flavor">{getSplitExcuse().flavor}</div>
+                )}
+              </div>
               {isDailyMessage && (
                 <div className="daily-hint">No further questions.</div>
               )}

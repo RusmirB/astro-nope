@@ -90,6 +90,30 @@
   font-weight: 500;
 }
 
+.excuse-core {
+  margin-bottom: 12px;
+}
+
+.excuse-flavor {
+  color: rgba(168, 155, 255, 0.95);
+  font-style: italic;
+  font-size: 1.4rem;
+  padding-top: 12px;
+  border-top: 1px solid rgba(168, 155, 255, 0.2);
+  animation: flavorSlide 0.5s ease-out;
+}
+
+@keyframes flavorSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .zodiac-indicator {
   margin-top: 12px;
   font-size: 0.85rem;

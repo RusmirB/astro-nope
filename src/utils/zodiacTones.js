@@ -291,9 +291,9 @@ function pickPlanetForToday() {
   return keys[deterministicIndexByDate(keys.length)];
 }
 
-// Replace the final sentence of the base excuse with a planet flavor phrase
-export function flavorExcuse(baseExcuse, sign) {
-  if (!baseExcuse) return baseExcuse;
+// Split the excuse into core and flavor parts for separate visual display
+export function splitExcuseWithFlavor(baseExcuse, sign) {
+  if (!baseExcuse) return { core: baseExcuse, flavor: null };
 
   let selectedEnding = null;
 
@@ -321,16 +321,23 @@ export function flavorExcuse(baseExcuse, sign) {
     }
   }
 
-  if (!selectedEnding) return baseExcuse;
+  if (!selectedEnding) return { core: baseExcuse, flavor: null };
 
-  // Replace the final sentence with the selected ending
+  // Split: extract last sentence from core and replace with flavor
   const lastDot = baseExcuse.lastIndexOf(".");
   if (lastDot === -1) {
-    // No sentence delimiter: append ending
-    return `${baseExcuse.trim()} ${selectedEnding}`;
+    // No sentence delimiter: return whole as core, flavor as addon
+    return { core: baseExcuse.trim(), flavor: selectedEnding };
   }
   // Find the start of the last sentence by locating the previous period
   const prevDot = baseExcuse.lastIndexOf(".", lastDot - 1);
-  const first = baseExcuse.slice(0, prevDot + 1).trim();
-  return `${first} ${selectedEnding}`;
+  const core = baseExcuse.slice(0, prevDot + 1).trim();
+  return { core, flavor: selectedEnding };
+}
+
+// Backward compatible: returns combined text
+export function flavorExcuse(baseExcuse, sign) {
+  const { core, flavor } = splitExcuseWithFlavor(baseExcuse, sign);
+  if (!flavor) return core;
+  return `${core} ${flavor}`;
 }
