@@ -292,36 +292,24 @@ function pickPlanetForToday() {
 }
 
 // Split the excuse into core and flavor parts for separate visual display
+// ZODIAC RULE: Flavor ONLY shows when a zodiac sign is selected
 export function splitExcuseWithFlavor(baseExcuse, sign) {
   if (!baseExcuse) return { core: baseExcuse, flavor: null };
 
-  let selectedEnding = null;
-
-  if (sign) {
-    const planet = SIGN_RULERS[sign];
-    const list = PLANET_FLAVORS[planet];
-    if (planet && list && list.length > 0) {
-      selectedEnding = list[deterministicIndexByDate(list.length)];
-    }
-  } else {
-    const category = pickWeightedCategory();
-    if (category === "planet") {
-      const p = pickPlanetForToday();
-      const list = PLANET_FLAVORS[p];
-      selectedEnding = list[deterministicIndexByDate(list.length)];
-    } else if (category === "moon") {
-      const list = PLANET_FLAVORS["moon"];
-      selectedEnding = list[deterministicIndexByDate(list.length)];
-    } else if (category === "number") {
-      const list = NUMEROLOGY_FLAVORS;
-      selectedEnding = list[deterministicIndexByDate(list.length)];
-    } else {
-      const list = UNIVERSE_FLAVORS;
-      selectedEnding = list[deterministicIndexByDate(list.length)];
-    }
+  // NO ZODIAC = NO FLAVOR (core message only)
+  if (!sign) {
+    return { core: baseExcuse, flavor: null };
   }
 
-  if (!selectedEnding) return { core: baseExcuse, flavor: null };
+  // WITH ZODIAC = ADD PLANET-BASED FLAVOR
+  const planet = SIGN_RULERS[sign];
+  const list = PLANET_FLAVORS[planet];
+
+  if (!planet || !list || list.length === 0) {
+    return { core: baseExcuse, flavor: null };
+  }
+
+  const selectedEnding = list[deterministicIndexByDate(list.length)];
 
   // Split: extract last sentence from core and replace with flavor
   const lastDot = baseExcuse.lastIndexOf(".");
