@@ -96,8 +96,8 @@ export function getCosmicFingerprint() {
     localStorage.setItem("astronope_device_seed", deviceSeed);
   }
 
-  // Hash to create fingerprint
-  const fingerprint = `${tz}-${dow}-${month}-${timeOfDay}-${deviceSeed}`;
+  // Hash to create fingerprint (added hour for better entropy)
+  const fingerprint = `${tz}-${dow}-${month}-${hour}-${timeOfDay}-${deviceSeed}`;
   let hash = 0;
   for (let i = 0; i < fingerprint.length; i++) {
     hash = (hash << 5) - hash + fingerprint.charCodeAt(i);
@@ -141,6 +141,21 @@ const SETUPS = [
   { text: "Can't.", tones: [TONE.DRY] },
   { text: "Not happening.", tones: [TONE.DRY] },
   { text: "No thanks.", tones: [TONE.DRY] },
+  { text: "Can't today.", tones: [TONE.DRY] },
+  { text: "Hard skip.", tones: [TONE.DRY] },
+  { text: "Unavailable.", tones: [TONE.DRY] },
+  { text: "Out of service.", tones: [TONE.DRY] },
+  { text: "System declined.", tones: [TONE.DRY] },
+  { text: "Blocked.", tones: [TONE.DRY] },
+  { text: "Denied.", tones: [TONE.DRY] },
+  { text: "Can't swing it.", tones: [TONE.DRY] },
+  { text: "Not available.", tones: [TONE.DRY] },
+  { text: "Off the table.", tones: [TONE.DRY] },
+  { text: "Request denied.", tones: [TONE.DRY] },
+  { text: "Not an option.", tones: [TONE.DRY] },
+  { text: "Access denied.", tones: [TONE.DRY] },
+  { text: "Can't do it.", tones: [TONE.DRY] },
+  { text: "Not possible.", tones: [TONE.DRY] },
 ];
 
 // Layer 2: AI-GENERATED MICRO-REASONS (from offline pool)
@@ -173,6 +188,18 @@ const PUNCHLINES = [
   { text: "Period.", tones: [TONE.DRY] },
   { text: "Moving on.", tones: [TONE.DRY] },
   { text: "Closed.", tones: [TONE.DRY] },
+  { text: "Next.", tones: [TONE.DRY] },
+  { text: "Noted.", tones: [TONE.DRY] },
+  { text: "Signing off.", tones: [TONE.DRY] },
+  { text: "Message ended.", tones: [TONE.DRY] },
+  { text: "No further questions.", tones: [TONE.DRY] },
+  { text: "Case closed.", tones: [TONE.DRY] },
+  { text: "Nothing more.", tones: [TONE.DRY] },
+  { text: "Conversation over.", tones: [TONE.DRY] },
+  { text: "Full stop.", tones: [TONE.DRY] },
+  { text: "End transmission.", tones: [TONE.DRY] },
+  { text: "Out.", tones: [TONE.DRY] },
+  { text: "Hard stop.", tones: [TONE.DRY] },
 ];
 
 // Helper: Find common tone between lists
