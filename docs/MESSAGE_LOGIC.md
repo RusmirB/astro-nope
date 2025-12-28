@@ -2,29 +2,29 @@
 
 ## Core Rules
 
-- **One daily message per user**
+- **One daily core message**
 
-  - The daily message is generated deterministically (date + browser fingerprint)
-  - The message is immutable for the entire day
+  - Generated deterministically (date + soft fingerprint)
+  - Immutable for the entire day (no rerolls)
 
-- **Zodiac selection**
+- **Zodiac selection (optional)**
 
   - Does NOT generate a new message
-  - Only changes the tone/flavor of the same message (e.g. "Scorpio energy")
-  - User can change zodiac up to 2 times per day
-  - After 2 changes, zodiac is locked until the next day
+  - Adds a visible second line (flavor) only when a zodiac is selected
+  - Unlimited changes per day; selecting the same sign does nothing
+  - Flavor is a pure function of sign → ruling planet → deterministic phrase
 
 - **No rerolls**
-  - There is no way to get a different excuse for the day
-  - Tomorrow brings a new message
+  - There is no way to get a different core excuse for the day
+  - Tomorrow brings a new core message
 
 ## UX Summary
 
 - Encourages daily ritual and return visits
-- Prevents "fishing" for better excuses
-- Zodiac adds personalization without breaking the ritual
+- Prevents "fishing" for better core excuses
+- Zodiac adds personalization without breaking the ritual (overlay, not identity)
 - Simple, fair, and easy to communicate
 
 ---
 
-_Last updated: 2025-12-27_
+_Last updated: 2025-12-28_

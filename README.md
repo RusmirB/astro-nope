@@ -11,8 +11,8 @@ A fun, entertainment-first app that delivers one deterministic cosmic excuse per
 
 ## Features
 
-- 🌙 **One message per day** - Same excuse throughout the day (daily ritual)
-- ✨ **Zodiac flavor transformation** - Apply zodiac tone to your message (optional)
+- 🌙 **One message per day** - Same core excuse throughout the day (daily ritual)
+- ✨ **Zodiac flavor (optional)** - Selecting a sign adds a visible second line; no selection shows core only
 - 📋 One-tap copy to clipboard
 - 📤 Native share functionality
 - 🎨 Beautiful cosmic-themed UI
@@ -29,9 +29,10 @@ A fun, entertainment-first app that delivers one deterministic cosmic excuse per
 
 **Zodiac Transform (Optional):**
 
-- Select zodiac sign → Message tone changes to match sign's energy
-- Message content adapts, flavor tag appears (e.g., "✨ Scorpio energy")
-- Zodiac is strategic flavor choice, not identity requirement
+- Select zodiac sign → A zodiac flavor line appears below the core message
+- Core message stays the same; flavor is deterministic per day and per sign
+- No zodiac selected → No flavor line shown
+- Zodiac is a strategic flavor choice, not an identity or profile
 
 ## Quick Start
 

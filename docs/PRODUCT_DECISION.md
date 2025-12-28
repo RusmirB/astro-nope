@@ -43,10 +43,16 @@ No setup. No thinking. No commitment.
 - ❌ Name
 - ❌ Date of birth
 - ❌ Gender
-- ❌ Astro sign
+- ❌ Astro sign (as identity or profile)
 - ❌ Any profile data
 
 If the user has to fill a form, Phase 1 is already broken.
+
+### Clarification: Optional Flavor Selection
+
+- A transient, optional zodiac selection is allowed as a UI overlay
+- It does not create a user profile and is not stored as identity
+- Behavior: selecting a zodiac adds a visible flavor line; core stays unchanged
 
 ---
 
