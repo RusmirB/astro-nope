@@ -18,6 +18,11 @@
   - There is no way to get a different core excuse for the day
   - Tomorrow brings a new core message
 
+### Default Tone
+
+- Core message is biased toward **dry/sarcastic** tone for clarity and shareability
+- Zodiac selection adds a cosmic flavor line; tone of core stays independent
+
 ## UX Summary
 
 - Encourages daily ritual and return visits

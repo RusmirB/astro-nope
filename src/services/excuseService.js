@@ -261,14 +261,26 @@ function composeExcuse(seed, vibePreference = null, reasonPool = null) {
 
   // Try up to 5 times to find a good combination
   while (attempts < 5) {
-    setup = SETUPS[Math.floor(rng() * SETUPS.length)];
-    reason = reasonsToUse[Math.floor(rng() * reasonsToUse.length)];
+    // Prefer DRY/sarcastic tone for setup and reason
+    const drySetups = SETUPS.filter((s) => s.tones.includes(TONE.DRY));
+    setup = drySetups.length
+      ? drySetups[Math.floor(rng() * drySetups.length)]
+      : SETUPS[Math.floor(rng() * SETUPS.length)];
+
+    const dryReasons = reasonsToUse.filter((r) => r.tones?.includes(TONE.DRY));
+    reason = dryReasons.length
+      ? dryReasons[Math.floor(rng() * dryReasons.length)]
+      : reasonsToUse[Math.floor(rng() * reasonsToUse.length)];
     // Prefer non-cosmic punchlines to keep core neutral
     const nonCosmicPunchlines = PUNCHLINES.filter(
       (p) => !containsCosmicMention(p.text)
     );
-    const punchPool = nonCosmicPunchlines.length > 0 ? nonCosmicPunchlines : PUNCHLINES;
-    punchline = punchPool[Math.floor(rng() * punchPool.length)];
+    const punchPool =
+      nonCosmicPunchlines.length > 0 ? nonCosmicPunchlines : PUNCHLINES;
+    const dryPunch = punchPool.filter((p) => p.tones.includes(TONE.DRY));
+    punchline = dryPunch.length
+      ? dryPunch[Math.floor(rng() * dryPunch.length)]
+      : punchPool[Math.floor(rng() * punchPool.length)];
 
     // Find common tone across all three
     commonTone = findCommonTone(setup, reason, punchline);
