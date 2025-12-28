@@ -400,11 +400,13 @@ function App() {
     if (!zodiacSign) {
       setSelectedZodiac(null);
       showToast("Zodiac flavor removed");
+      setShowZodiacSelector(false);
       return;
     }
     // Provera: da li je isti znak već selektovan?
     if (selectedZodiac === zodiacSign) {
       showToast(`Already using ${zodiacSign} energy ✨`);
+      setShowZodiacSelector(false);
       return;
     }
     // Unlimited promene - nema limita!
@@ -414,6 +416,8 @@ function App() {
     setTimeout(() => setShowCosmicTransition(false), 800);
     // Samo menja ton prikaza, ne generiše novu poruku
     showToast(`Zodiac changed to ${zodiacSign}!`);
+    // Ensure picker closes immediately regardless of child animation
+    setShowZodiacSelector(false);
   };
 
   const handleShareImage = async () => {
