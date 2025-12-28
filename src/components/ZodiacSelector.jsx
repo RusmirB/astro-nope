@@ -10,30 +10,20 @@ export default function ZodiacSelector({ onClose, onSelectZodiac }) {
   const [selectedSign, setSelectedSign] = useState(getSelectedZodiac());
   const [closing, setClosing] = useState(false);
 
-  const handleSelectSign = async (sign) => {
+  const handleSelectSign = (sign) => {
     setSelectedSign(sign);
     setSelectedZodiac(sign);
-    // Call parent handler to generate zodiac-specific excuse
-    if (onSelectZodiac) {
-      await onSelectZodiac(sign);
-    }
-    // Auto-close with subtle animation
-    setClosing(true);
-    setTimeout(() => {
-      onClose?.();
-    }, 180);
+    // Close immediately to guarantee auto-close UX
+    onClose?.();
+    // Fire selection logic without awaiting UI close
+    onSelectZodiac?.(sign);
   };
 
   const handleClear = () => {
     setSelectedSign(null);
     setSelectedZodiac(null);
-    if (onSelectZodiac) {
-      onSelectZodiac(null);
-    }
-    setClosing(true);
-    setTimeout(() => {
-      onClose?.();
-    }, 180);
+    onClose?.();
+    onSelectZodiac?.(null);
   };
 
   return (
