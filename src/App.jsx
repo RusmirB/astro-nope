@@ -225,8 +225,16 @@ function App() {
     updateFavoritesList();
   };
 
-  const handleLoadFavorite = (favoriteExcuse) => {
-    setExcuse(favoriteExcuse);
+  const handleLoadFavorite = async (favoriteExcuse) => {
+    // Favorites are tools, not daily replacements
+    // Copy to clipboard for reuse elsewhere
+    const success = await copyTextRobust(favoriteExcuse);
+    if (success) {
+      showToast("Copied! The universe won't judge. 📋");
+      trackCopy();
+    } else {
+      showToast("Copy failed. Try again.");
+    }
     setShowFavorites(false);
   };
 
@@ -634,8 +642,9 @@ function App() {
                       <button
                         className="btn-small"
                         onClick={() => handleLoadFavorite(fav)}
+                        title="Copy to clipboard for reuse"
                       >
-                        Use
+                        Copy & Use
                       </button>
                       <button
                         className="btn-small"
