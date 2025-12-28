@@ -53,7 +53,6 @@ function App() {
   const [showZodiacSelector, setShowZodiacSelector] = useState(false);
   const [selectedZodiac, setSelectedZodiac] = useState(getSelectedZodiac());
   // Uklanjamo reroll logiku
-  const [zodiacChangesLeft, setZodiacChangesLeft] = useState(2);
   const [isDailyMessage, setIsDailyMessage] = useState(true);
   const [showCosmicTransition, setShowCosmicTransition] = useState(false);
   const [showUniverseIntro, setShowUniverseIntro] = useState(true);
@@ -169,16 +168,7 @@ function App() {
         setIsLoading(false);
       }
     })();
-    // Reset zodiac changes on new day
-    const today = new Date().toLocaleDateString("en-CA");
-    const zodiacKey = "astronope_zodiac_changes";
-    const stored = JSON.parse(localStorage.getItem(zodiacKey) || "null");
-    if (!stored || stored.date !== today) {
-      localStorage.setItem(zodiacKey, JSON.stringify({ date: today, left: 2 }));
-      setZodiacChangesLeft(2);
-    } else {
-      setZodiacChangesLeft(stored.left);
-    }
+    // Zodiac changes are now unlimited - no counter needed
     updateFavoritesList();
   }, []);
 
@@ -403,26 +393,21 @@ function App() {
   const handleZodiacChange = (zodiacSign) => {
     if (!zodiacSign) {
       setSelectedZodiac(null);
+      showToast("Zodiac flavor removed");
       return;
     }
-    // Proveri broj preostalih promena
-    const today = new Date().toLocaleDateString("en-CA");
-    const zodiacKey = "astronope_zodiac_changes";
-    const stored = JSON.parse(localStorage.getItem(zodiacKey) || "null");
-    let left = stored && stored.date === today ? stored.left : 2;
-    if (left <= 0) {
-      showToast("No more zodiac changes today. See you tomorrow! 🌙");
+    // Provera: da li je isti znak već selektovan?
+    if (selectedZodiac === zodiacSign) {
+      showToast(`Already using ${zodiacSign} energy ✨`);
       return;
     }
-    left -= 1;
+    // Unlimited promene - nema limita!
     setSelectedZodiac(zodiacSign);
-    setZodiacChangesLeft(left);
-    localStorage.setItem(zodiacKey, JSON.stringify({ date: today, left }));
     // Vizuelni "universe updated" efekat
     setShowCosmicTransition(true);
     setTimeout(() => setShowCosmicTransition(false), 800);
     // Samo menja ton prikaza, ne generiše novu poruku
-    showToast(`Zodiac changed (${zodiacSign})!`);
+    showToast(`Zodiac changed to ${zodiacSign}!`);
   };
 
   const handleShareImage = async () => {
@@ -575,11 +560,9 @@ function App() {
           <button
             className="btn-zodiac-flavor"
             onClick={() => setShowZodiacSelector(true)}
-            disabled={isLoading || !excuse || zodiacChangesLeft === 0}
+            disabled={isLoading || !excuse}
             title={
-              zodiacChangesLeft === 0
-                ? "No more zodiac changes today"
-                : selectedZodiac
+              selectedZodiac
                 ? `Change zodiac (${selectedZodiac})`
                 : "Blame my zodiac ✨"
             }
@@ -587,11 +570,6 @@ function App() {
             {selectedZodiac
               ? `Change zodiac (${selectedZodiac}) ✨`
               : "Blame my zodiac ✨"}
-            {zodiacChangesLeft > 0 && (
-              <span style={{ marginLeft: 8, fontSize: "0.9em", color: "#aaa" }}>
-                {zodiacChangesLeft} left
-              </span>
-            )}
           </button>
         </div>
 
