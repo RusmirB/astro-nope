@@ -321,6 +321,24 @@ function App() {
     }
   };
 
+  // Helper: Format excuse for sharing (includes flavor + URL)
+  const getShareableText = (includeUrl = true) => {
+    const { core, flavor } = getSplitExcuse();
+    let text = core;
+
+    // Add flavor if zodiac is selected
+    if (flavor) {
+      text += `\n${flavor}`;
+    }
+
+    // Add branding + URL for viral growth
+    if (includeUrl) {
+      text += `\n\n🌌 astronope.app — your daily cosmic nope`;
+    }
+
+    return text;
+  };
+
   const handleShare = async () => {
     // Use Web Share API (works on mobile browsers and PWA)
     if (navigator.share) {
@@ -340,8 +358,8 @@ function App() {
               type: "image/png",
             });
             await navigator.share({
-              title: "AstroNope",
-              text: getBaseExcuse(),
+              title: "AstroNope — Daily Cosmic Nope",
+              text: getShareableText(),
               files: [file],
             });
             trackShare("image");
@@ -354,8 +372,8 @@ function App() {
 
         // Fallback to text share
         await navigator.share({
-          title: "AstroNope",
-          text: getBaseExcuse(),
+          title: "AstroNope — Daily Cosmic Nope",
+          text: getShareableText(),
         });
         trackShare("text");
         maybeShowBrandCaption();
@@ -433,7 +451,8 @@ function App() {
 
     try {
       setIsLoading(true);
-      const imageBlob = await generateExcuseImage(excuse);
+      const { core, flavor } = getSplitExcuse();
+      const imageBlob = await generateExcuseImage(core, flavor, selectedZodiac);
 
       if (
         navigator.share &&
@@ -448,8 +467,8 @@ function App() {
           type: "image/png",
         });
         await navigator.share({
-          title: "AstroNope",
-          text: excuse,
+          title: "AstroNope — Daily Cosmic Nope",
+          text: getShareableText(),
           files: [file],
         });
         showToast("Image shared! 🎨");
