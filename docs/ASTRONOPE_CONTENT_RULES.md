@@ -13,16 +13,19 @@ AstroNope = **dismissive refusal generator**, not a horoscope.
 ## Core Message Rules (Mandatory)
 
 ### Structure
+
 - **Max 12 words total**
 - Format: `[Setup]. [Reason]. [Closer].`
 - Sounds like a verdict that ends conversation
 
 ### Tone
+
 - Dry > funny
 - Confident > mystical
 - Modern > spiritual
 
 ### Length per component
+
 - Setup: 1–3 words (Pass. / Nope. / Skip.)
 - Reason: 2–6 words (micro-excuse from AI pool)
 - Closer: 1–3 words (Done. / Period. / Moving on.)
@@ -30,11 +33,13 @@ AstroNope = **dismissive refusal generator**, not a horoscope.
 ### Examples
 
 ✅ Good:
+
 - "Pass. Calendar invited chaos. Done."
 - "Nope. Brain entered airplane mode. Period."
 - "Skip. Energy clocked out early. Moving on."
 
 ❌ Bad:
+
 - "Today is not ideal for you." (too polite)
 - "You might want to reconsider." (coaching tone)
 - "It's okay to rest today." (wellness speak)
@@ -49,11 +54,13 @@ AstroNope = **dismissive refusal generator**, not a horoscope.
 - Never explains or educates
 
 ✅ Good:
+
 - "Virgo energy. Overthinking denied."
 - "Mercury was involved."
 - "Leo declined the request."
 
 ❌ Bad:
+
 - "Because Virgo tends to overthink…" (explanation)
 - "Mercury retrograde affects communication." (education)
 
@@ -62,10 +69,12 @@ AstroNope = **dismissive refusal generator**, not a horoscope.
 ## Strict Prohibitions
 
 ### ❌ NO Numerology
+
 - No 111, 222, 333, 444, 555, 666, 777, 888, 999
 - Exception: Only if ironically used as joke
 
 ### ❌ NO Wellness Language
+
 - "Let's try again tomorrow"
 - "Take a break"
 - "Align tomorrow"
@@ -73,12 +82,14 @@ AstroNope = **dismissive refusal generator**, not a horoscope.
 - "Pause and reflect"
 
 ### ❌ NO Astrology Jargon
+
 - "Transits are intense"
 - "Houses are blocked"
 - "Phases are shifting"
 - "Alignments are off"
 
 ### ❌ NO Therapy Speak
+
 - "You need to…"
 - "It's okay to…"
 - "Consider your feelings…"
@@ -88,6 +99,7 @@ AstroNope = **dismissive refusal generator**, not a horoscope.
 ## Vocabulary Guidelines
 
 ### ✅ Preferred
+
 - Pass, skip, nope, denied
 - Out, closed, done, period
 - Hard pass, final answer
@@ -95,6 +107,7 @@ AstroNope = **dismissive refusal generator**, not a horoscope.
 - Message not delivered
 
 ### ❌ Avoid
+
 - "The universe whispers"
 - "Energies are heavy"
 - "Cosmic alignment blocked"

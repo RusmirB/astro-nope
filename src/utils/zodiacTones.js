@@ -280,25 +280,34 @@ export function splitExcuseWithFlavor(baseExcuse, sign) {
   }
 
   // WITH ZODIAC = ADD PLANET-BASED FLAVOR
-  const planet = SIGN_RULERS[sign];
-  const list = PLANET_FLAVORS[planet];
+  const flavorText = getPlanetFlavorForSign(sign);
 
-  if (!planet || !list || list.length === 0) {
+  if (!flavorText) {
     return { core: baseExcuse, flavor: null };
   }
-
-  const selectedEnding = list[deterministicIndexByDate(list.length)];
 
   // Split: extract last sentence from core and replace with flavor
   const lastDot = baseExcuse.lastIndexOf(".");
   if (lastDot === -1) {
     // No sentence delimiter: return whole as core, flavor as addon
-    return { core: baseExcuse.trim(), flavor: selectedEnding };
+    return { core: baseExcuse.trim(), flavor: flavorText };
   }
   // Find the start of the last sentence by locating the previous period
   const prevDot = baseExcuse.lastIndexOf(".", lastDot - 1);
   const core = baseExcuse.slice(0, prevDot + 1).trim();
-  return { core, flavor: selectedEnding };
+  return { core, flavor: flavorText };
+}
+
+// Helper: Get planet-based flavor for a sign (used by FlavorEngine)
+export function getPlanetFlavorForSign(sign) {
+  const planet = SIGN_RULERS[sign];
+  const list = PLANET_FLAVORS[planet];
+
+  if (!planet || !list || list.length === 0) {
+    return null;
+  }
+
+  return list[deterministicIndexByDate(list.length)];
 }
 
 // Backward compatible: returns combined text
