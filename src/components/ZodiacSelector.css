@@ -12,12 +12,25 @@
   animation: fadeIn 0.2s ease-out;
 }
 
+.zodiac-overlay.closing {
+  animation: fadeOut 0.18s ease-out forwards;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
   }
   to {
     opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
   }
 }
 
@@ -34,6 +47,10 @@
   animation: slideUp 0.3s ease-out;
 }
 
+.zodiac-modal.closing {
+  animation: scaleOut 0.18s ease-out forwards;
+}
+
 @keyframes slideUp {
   from {
     transform: translateY(30px);
@@ -45,9 +62,20 @@
   }
 }
 
+@keyframes scaleOut {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.98);
+    opacity: 0;
+  }
+}
+
 .zodiac-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin-bottom: 25px;
 }
@@ -58,26 +86,7 @@
   font-size: 1.4rem;
 }
 
-.zodiac-close {
-  background: none;
-  border: none;
-  color: #aaa;
-  font-size: 2rem;
-  cursor: pointer;
-  padding: 0;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: all 0.2s ease;
-}
-
-.zodiac-close:hover {
-  background: rgba(138, 43, 226, 0.2);
-  color: #fff;
-}
+/* Close button removed to reduce friction */
 
 .zodiac-grid {
   display: grid;
@@ -133,10 +142,10 @@
 .zodiac-clear {
   width: 100%;
   padding: 12px;
-  background: rgba(200, 50, 50, 0.2);
-  border: 2px solid rgba(200, 50, 50, 0.3);
+  background: rgba(200, 50, 50, 0.25);
+  border: 2px solid rgba(200, 50, 50, 0.5);
   border-radius: 10px;
-  color: #ff9999;
+  color: #ffd6d6;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -144,6 +153,6 @@
 }
 
 .zodiac-clear:hover {
-  background: rgba(200, 50, 50, 0.3);
-  border-color: rgba(200, 50, 50, 0.5);
+  background: rgba(200, 50, 50, 0.35);
+  border-color: rgba(200, 50, 50, 0.7);
 }

@@ -8,6 +8,7 @@ import "./ZodiacSelector.css";
 
 export default function ZodiacSelector({ onClose, onSelectZodiac }) {
   const [selectedSign, setSelectedSign] = useState(getSelectedZodiac());
+  const [closing, setClosing] = useState(false);
 
   const handleSelectSign = async (sign) => {
     setSelectedSign(sign);
@@ -16,7 +17,11 @@ export default function ZodiacSelector({ onClose, onSelectZodiac }) {
     if (onSelectZodiac) {
       await onSelectZodiac(sign);
     }
-    // Parent will close modal immediately to prevent race conditions
+    // Auto-close with subtle animation
+    setClosing(true);
+    setTimeout(() => {
+      onClose?.();
+    }, 180);
   };
 
   const handleClear = () => {
@@ -25,17 +30,40 @@ export default function ZodiacSelector({ onClose, onSelectZodiac }) {
     if (onSelectZodiac) {
       onSelectZodiac(null);
     }
-    setTimeout(onClose, 300);
+    setClosing(true);
+    setTimeout(() => {
+      onClose?.();
+    }, 180);
   };
 
   return (
-    <div className="zodiac-overlay" onClick={onClose}>
-      <div className="zodiac-modal" onClick={(e) => e.stopPropagation()}>
+    <div
+      className={`zodiac-overlay ${closing ? "closing" : ""}`}
+      role="presentation"
+      tabIndex={-1}
+      onClick={() => {
+        setClosing(true);
+        setTimeout(() => {
+          onClose?.();
+        }, 180);
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Escape") {
+          setClosing(true);
+          setTimeout(() => {
+            onClose?.();
+          }, 180);
+        }
+      }}
+    >
+      <div
+        className={`zodiac-modal ${closing ? "closing" : ""}`}
+        role="dialog"
+        aria-modal="true"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="zodiac-header">
           <h3>Pick your sign ✨</h3>
-          <button className="zodiac-close" onClick={onClose}>
-            ×
-          </button>
         </div>
 
         <div className="zodiac-grid">
