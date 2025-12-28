@@ -1,64 +1,123 @@
 # AstroNope Content Rules
 
-AstroNope = sarcastic excuse, not a horoscope.
+AstroNope = **dismissive refusal generator**, not a horoscope.
 
 ## Core Identity
 
-- Sarcasm is the product; cosmos is decor.
-- Core reads like a decision: short, dry, confident.
+- **Refusal is the product; cosmos is the excuse.**
+- Core reads like a final decision: short, dry, confident.
 - Zodiac is an optional twist, never required.
+
+---
 
 ## Core Message Rules (Mandatory)
 
-- 1–2 short sentences.
-- Sounds like a verdict.
-- Avoid emotions and explanations.
-- No coaching, wellness, or advice.
+### Structure
+- **Max 12 words total**
+- Format: `[Setup]. [Reason]. [Closer].`
+- Sounds like a verdict that ends conversation
 
-Good:
+### Tone
+- Dry > funny
+- Confident > mystical
+- Modern > spiritual
 
-- Not today.
-- Can’t swing it.
-- Hard no.
+### Length per component
+- Setup: 1–3 words (Pass. / Nope. / Skip.)
+- Reason: 2–6 words (micro-excuse from AI pool)
+- Closer: 1–3 words (Done. / Period. / Moving on.)
 
-Bad:
+### Examples
 
-- Today is not ideal for you.
-- You might want to reconsider.
-- It’s okay to rest today.
+✅ Good:
+- "Pass. Calendar invited chaos. Done."
+- "Nope. Brain entered airplane mode. Period."
+- "Skip. Energy clocked out early. Moving on."
+
+❌ Bad:
+- "Today is not ideal for you." (too polite)
+- "You might want to reconsider." (coaching tone)
+- "It's okay to rest today." (wellness speak)
+
+---
 
 ## Zodiac Flavor Rules
 
-- Only appears when a sign is selected.
-- Short cosmic shrug; amplifies sarcasm.
-- Never explains or educates.
+- **Only appears when a sign is selected**
+- **Max 6 words**
+- Short cosmic shrug; amplifies sarcasm
+- Never explains or educates
 
-Good:
+✅ Good:
+- "Virgo energy. Overthinking denied."
+- "Mercury was involved."
+- "Leo declined the request."
 
-- Virgo energy.
-- Mercury was involved.
-- Leo declined.
+❌ Bad:
+- "Because Virgo tends to overthink…" (explanation)
+- "Mercury retrograde affects communication." (education)
 
-Bad:
+---
 
-- Because Virgo tends to overthink…
-- Mercury retrograde affects communication.
+## Strict Prohibitions
 
-## Phrases to Avoid (Delete)
+### ❌ NO Numerology
+- No 111, 222, 333, 444, 555, 666, 777, 888, 999
+- Exception: Only if ironically used as joke
 
-- Let’s try again tomorrow.
-- Return tomorrow.
-- Align tomorrow.
-- Take a break.
+### ❌ NO Wellness Language
+- "Let's try again tomorrow"
+- "Take a break"
+- "Align tomorrow"
+- "Return tomorrow"
+- "Pause and reflect"
+
+### ❌ NO Astrology Jargon
+- "Transits are intense"
+- "Houses are blocked"
+- "Phases are shifting"
+- "Alignments are off"
+
+### ❌ NO Therapy Speak
+- "You need to…"
+- "It's okay to…"
+- "Consider your feelings…"
+
+---
+
+## Vocabulary Guidelines
+
+### ✅ Preferred
+- Pass, skip, nope, denied
+- Out, closed, done, period
+- Hard pass, final answer
+- System error (as human metaphor)
+- Message not delivered
+
+### ❌ Avoid
+- "The universe whispers"
+- "Energies are heavy"
+- "Cosmic alignment blocked"
+- "Angel numbers guiding"
+
+---
+
+## Share Test (FINAL CHECK)
+
+Before approving any message, ask:
+
+**Would someone paste this into Slack, WhatsApp, or Twitter without embarrassment?**
+
+If NO → reject it.
+
+---
 
 ## Formula
 
-[Short refusal]. [Dry cosmic shrug].
+`[Short refusal]. [Dry micro-reason]. [Conversation ender].`
 
-Examples:
+Max 12 words. No emojis. No mysticism.
 
-- Not today. Universe said no.
-- Can’t swing it. Signals crossed.
-- Hard no. Timing disagreed.
+---
 
 _Last updated: 2025-12-28_

@@ -128,19 +128,19 @@ const TONE = {
   DRY: "dry",
 };
 
-// Layer 1: SETUP (Short, human, clear)
-// These sound like a real person who just decided not to do it
+// Layer 1: SETUP (Short, dismissive refusals - max 3 words)
+// Confident "no" without explanation
 const SETUPS = [
-  { text: "Not today.", tones: [TONE.DRY] },
-  { text: "Hard no.", tones: [TONE.DRY] },
-  { text: "Can't swing it.", tones: [TONE.DRY] },
-  { text: "Not happening.", tones: [TONE.DRY] },
-  { text: "I'm out.", tones: [TONE.DRY] },
-  { text: "Nope.", tones: [TONE.DRY] },
   { text: "Pass.", tones: [TONE.DRY] },
-  { text: "Denied.", tones: [TONE.DRY] },
-  { text: "Standing down.", tones: [TONE.DRY] },
-  { text: "Today’s a no.", tones: [TONE.DRY] },
+  { text: "Nope.", tones: [TONE.DRY] },
+  { text: "Not today.", tones: [TONE.DRY] },
+  { text: "Skip.", tones: [TONE.DRY] },
+  { text: "Hard pass.", tones: [TONE.DRY] },
+  { text: "Declined.", tones: [TONE.DRY] },
+  { text: "Out.", tones: [TONE.DRY] },
+  { text: "Can't.", tones: [TONE.DRY] },
+  { text: "Not happening.", tones: [TONE.DRY] },
+  { text: "No thanks.", tones: [TONE.DRY] },
 ];
 
 // Layer 2: AI-GENERATED MICRO-REASONS (from offline pool)
@@ -162,19 +162,17 @@ function getReasonPoolForFingerprint(fingerprint) {
   return Array.from(indices).map((i) => AI_REASONS[i]);
 }
 
-// Layer 3: PUNCHLINE (Short, punchy, can be a tweet by itself)
-// These CLOSE the joke and deliver the laugh
+// Layer 3: PUNCHLINE (2-4 words max, ends conversation)
+// Confident refusal closer - no room for negotiation
 const PUNCHLINES = [
-  { text: "Universe said no.", tones: [TONE.DRY] },
-  { text: "Signals crossed.", tones: [TONE.DRY] },
-  { text: "Timing disagreed.", tones: [TONE.DRY] },
-  { text: "Request denied.", tones: [TONE.DRY] },
-  { text: "Cosmic interference.", tones: [TONE.DRY] },
-  { text: "Message not delivered.", tones: [TONE.DRY] },
-  { text: "Stars declined.", tones: [TONE.DRY] },
-  { text: "Mercury was involved.", tones: [TONE.DRY] },
-  { text: "Rules of space apply.", tones: [TONE.DRY] },
-  { text: "Decision stands.", tones: [TONE.DRY] },
+  { text: "Done.", tones: [TONE.DRY] },
+  { text: "That's it.", tones: [TONE.DRY] },
+  { text: "Final answer.", tones: [TONE.DRY] },
+  { text: "Not negotiable.", tones: [TONE.DRY] },
+  { text: "End of story.", tones: [TONE.DRY] },
+  { text: "Period.", tones: [TONE.DRY] },
+  { text: "Moving on.", tones: [TONE.DRY] },
+  { text: "Closed.", tones: [TONE.DRY] },
 ];
 
 // Helper: Find common tone between lists

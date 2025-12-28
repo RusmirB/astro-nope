@@ -226,16 +226,6 @@
     { "text": "Lunar eclipse blocked access", "tones": ["playful"] },
     { "text": "Eclipse season is messy", "tones": ["dry"] },
 
-    { "text": "The 777 moment went elsewhere", "tones": ["dry"] },
-    { "text": "222 is telling you to wait", "tones": ["playful"] },
-    { "text": "444 means foundation issues", "tones": ["playful"] },
-    { "text": "555 demands change", "tones": ["dry"] },
-    { "text": "111 is saying start over", "tones": ["playful"] },
-    { "text": "333 is too much", "tones": ["dry"] },
-    { "text": "666 is asking for balance", "tones": ["playful"] },
-    { "text": "888 is pointing elsewhere", "tones": ["dry"] },
-    { "text": "999 is marking an ending", "tones": ["playful"] },
-
     { "text": "Age of Aquarius is confusing", "tones": ["playful"] },
     { "text": "Solar return changed everything", "tones": ["playful"] },
     { "text": "Lunar return brought waves", "tones": ["dry"] },
