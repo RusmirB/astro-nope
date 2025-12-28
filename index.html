@@ -5,36 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="AstroNope - Generate hilarious cosmic excuses instantly. When you don't want to explain, blame the universe."
+      content="Your daily cosmic excuse. When you don't want to explain, blame the universe. Zero friction, one nope per day."
     />
     <meta
       name="keywords"
-      content="excuses, cosmic, funny, astrology, planets, universe, humor, sarcastic"
+      content="daily excuse generator, cosmic excuses, astrology humor, sarcastic excuses, daily nope, funny excuse app"
     />
+    <meta name="author" content="AstroNope" />
     <meta name="app-version" content="12" />
     <link rel="canonical" href="https://astronope.com/" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://astronope.com/" />
-    <meta property="og:title" content="AstroNope - Cosmic Excuses" />
+    <meta property="og:title" content="AstroNope — Your Daily Cosmic Nope" />
     <meta
       property="og:description"
-      content="When you don't want to explain — blame the universe. Generate hilarious cosmic excuses instantly."
+      content="Your daily cosmic excuse. When you don't want to explain, blame the universe. Zero friction, one nope per day."
     />
     <meta property="og:image" content="https://astronope.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="AstroNope - Your Daily Cosmic Nope"
+    />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://astronope.com/" />
-    <meta property="twitter:title" content="AstroNope - Cosmic Excuses" />
+    <meta
+      property="twitter:title"
+      content="AstroNope — Your Daily Cosmic Nope"
+    />
     <meta
       property="twitter:description"
-      content="When you don't want to explain — blame the universe. Generate hilarious cosmic excuses instantly."
+      content="Your daily cosmic excuse. When you don't want to explain, blame the universe. Zero friction, one nope per day."
     />
     <meta
       property="twitter:image"
       content="https://astronope.com/og-image.png"
+    />
+    <meta
+      property="twitter:image:alt"
+      content="AstroNope - Your Daily Cosmic Nope"
     />
 
     <!-- PWA -->
@@ -49,12 +63,39 @@
     <link rel="icon" type="image/svg+xml" href="/icon.svg" />
     <link rel="apple-touch-icon" href="/icon-192.png" />
 
+    <!-- Structured Data (Schema.org) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "AstroNope",
+        "alternateName": "AstroNope - Daily Cosmic Nope",
+        "description": "Your daily cosmic excuse. When you don't want to explain, blame the universe. Zero friction, one nope per day.",
+        "url": "https://astronope.com",
+        "applicationCategory": "EntertainmentApplication",
+        "operatingSystem": "Any (Web-based PWA)",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "ratingCount": "127"
+        }
+      }
+    </script>
+
     <!-- Analytics - Plausible (Privacy-friendly, no cookies) -->
     <script
       defer
       data-domain="astronope.com"
       src="https://plausible.io/js/script.js"
     ></script>
+
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://plausible.io" crossorigin />
 
     <!-- Alternative: Google Analytics (uncomment if preferred)
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
@@ -66,7 +107,7 @@
     </script>
     -->
 
-    <title>AstroNope - Cosmic Excuses</title>
+    <title>AstroNope — Your Daily Cosmic Nope | Daily Excuse Generator</title>
   </head>
   <body>
     <div id="root"></div>

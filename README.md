@@ -1,6 +1,6 @@
 # AstroNope - Daily Cosmic Ritual
 
-> 🌐 **Live:** [astro-nope.com](https://astro-nope.com)  
+> 🌐 **Live:** [astronope.com](https://astronope.com)  
 > 📦 **GitHub:** [RusmirB/astro-nope](https://github.com/RusmirB/astro-nope)
 
 **When you don't want to explain — blame the universe.**
@@ -87,7 +87,7 @@ The app is fully responsive and installable as PWA. Service Worker provides:
 
 The app is deployed on Vercel with custom domain:
 
-- **Production URL:** [astro-nope.com](https://astro-nope.com)
+- **Production URL:** [astronope.com](https://astronope.com)
 - **Vercel Dashboard:** [my-app project](https://vercel.com/rusmirbec-3391s-projects/my-app)
 - **GitHub Repo:** [RusmirB/astro-nope](https://github.com/RusmirB/astro-nope)
 
