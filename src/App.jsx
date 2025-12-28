@@ -333,7 +333,7 @@ function App() {
 
     // Add branding + URL for viral growth
     if (includeUrl) {
-      text += `\n\n🌌 astronope.app - your daily cosmic nope`;
+      text += `\n\n🌌 astronope.com - your daily cosmic nope`;
     }
 
     return text;
