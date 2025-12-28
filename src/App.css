@@ -734,13 +734,24 @@
   color: rgba(255, 255, 255, 0.9);
   font-weight: 300;
   letter-spacing: 2px;
-  animation: textGlow 1.5s ease-in-out;
+  animation: textBlurIn 0.3s ease-out, textGlow 1.5s ease-in-out 0.3s;
+}
+
+@keyframes textBlurIn {
+  0% {
+    opacity: 0;
+    filter: blur(8px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+  }
 }
 
 @keyframes textGlow {
   0%,
   100% {
-    opacity: 0;
+    opacity: 1;
     text-shadow: 0 0 10px rgba(168, 155, 255, 0.3);
   }
   50% {
