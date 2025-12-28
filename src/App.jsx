@@ -613,16 +613,6 @@ function App() {
           </button>
         </div>
 
-        {/* Comeback CTA */}
-        {!isLoading && excuse && (
-          <div className="comeback-message">
-            <p>
-              That's all for today. Come back tomorrow for a fresh cosmic excuse
-              <span className="comeback-emoji">🌙</span>
-            </p>
-          </div>
-        )}
-
         {/* Favorites Panel */}
         {showFavorites && (
           <div className="favorites-panel">
