@@ -99,7 +99,7 @@ export async function generateExcuseImage(
     'italic 32px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
   ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
   ctx.fillText(
-    "astronope.app — your daily cosmic nope",
+    "astronope.app - your daily cosmic nope",
     canvas.width / 2,
     canvas.height - 60
   );

@@ -3,7 +3,7 @@
 > 🌐 **Live:** [astronope.com](https://astronope.com)  
 > 📦 **GitHub:** [RusmirB/astro-nope](https://github.com/RusmirB/astro-nope)
 
-**When you don't want to explain — blame the universe.**
+**When you don't want to explain - blame the universe.**
 
 See [docs/PRODUCT_DECISION.md](docs/PRODUCT_DECISION.md) for Phase 1 (Simplicity First) and product principles.
 

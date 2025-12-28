@@ -333,7 +333,7 @@ function App() {
 
     // Add branding + URL for viral growth
     if (includeUrl) {
-      text += `\n\n🌌 astronope.app — your daily cosmic nope`;
+      text += `\n\n🌌 astronope.app - your daily cosmic nope`;
     }
 
     return text;
@@ -358,7 +358,7 @@ function App() {
               type: "image/png",
             });
             await navigator.share({
-              title: "AstroNope — Daily Cosmic Nope",
+              title: "AstroNope - Daily Cosmic Nope",
               text: getShareableText(),
               files: [file],
             });

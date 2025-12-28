@@ -1,7 +1,7 @@
 {
   "name": "AstroNope - Cosmic Excuses",
   "short_name": "AstroNope",
-  "description": "When you don't want to explain — blame the universe. Generate hilarious cosmic excuses instantly.",
+  "description": "When you don't want to explain - blame the universe. Generate hilarious cosmic excuses instantly.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0a0f",
