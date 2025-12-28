@@ -40,6 +40,15 @@ const COSMIC_KEYWORDS = [
   "neptune",
   "sun",
   "moon",
+  // generic cosmic nouns (singular/plural)
+  "planet",
+  "planets",
+  "star",
+  "stars",
+  "cosmos",
+  "cosmic",
+  "universe",
+  "outer space",
   // astro jargon to avoid educational tone
   "transit",
   "house",
@@ -254,7 +263,12 @@ function composeExcuse(seed, vibePreference = null, reasonPool = null) {
   while (attempts < 5) {
     setup = SETUPS[Math.floor(rng() * SETUPS.length)];
     reason = reasonsToUse[Math.floor(rng() * reasonsToUse.length)];
-    punchline = PUNCHLINES[Math.floor(rng() * PUNCHLINES.length)];
+    // Prefer non-cosmic punchlines to keep core neutral
+    const nonCosmicPunchlines = PUNCHLINES.filter(
+      (p) => !containsCosmicMention(p.text)
+    );
+    const punchPool = nonCosmicPunchlines.length > 0 ? nonCosmicPunchlines : PUNCHLINES;
+    punchline = punchPool[Math.floor(rng() * punchPool.length)];
 
     // Find common tone across all three
     commonTone = findCommonTone(setup, reason, punchline);
