@@ -16,9 +16,8 @@ function checkForUpdates() {
     .then((response) => response.text())
     .then((html) => {
       // Extract version from meta tag
-      const versionMatch = html.match(
-        /<meta name="app-version" content="([^"]+)"/
-      );
+      const versionRegex = /<meta name="app-version" content="([^"]+)"/;
+      const versionMatch = versionRegex.exec(html);
       const newVersion = versionMatch ? versionMatch[1] : "0";
       const currentVersion =
         localStorage.getItem("astronope-app-version") || "0";
