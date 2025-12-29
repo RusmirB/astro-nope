@@ -131,31 +131,23 @@ const TONE = {
 // Layer 1: SETUP (Short, dismissive refusals - max 3 words)
 // Confident "no" without explanation
 const SETUPS = [
-  { text: "Pass.", tones: [TONE.DRY] },
-  { text: "Nope.", tones: [TONE.DRY] },
-  { text: "Not today.", tones: [TONE.DRY] },
-  { text: "Skip.", tones: [TONE.DRY] },
-  { text: "Hard pass.", tones: [TONE.DRY] },
-  { text: "Declined.", tones: [TONE.DRY] },
-  { text: "Out.", tones: [TONE.DRY] },
-  { text: "Can't.", tones: [TONE.DRY] },
-  { text: "Not happening.", tones: [TONE.DRY] },
-  { text: "No thanks.", tones: [TONE.DRY] },
+  // TOP TIER (use often)
   { text: "Can't today.", tones: [TONE.DRY] },
-  { text: "Hard skip.", tones: [TONE.DRY] },
+  { text: "Not happening.", tones: [TONE.DRY] },
+  { text: "Declined.", tones: [TONE.DRY] },
   { text: "Unavailable.", tones: [TONE.DRY] },
+  { text: "Hard pass.", tones: [TONE.DRY] },
+  { text: "System says no.", tones: [TONE.DRY] },
+  // Contextual (use rarely)
+  { text: "I would, but I won't.", tones: [TONE.DRY] },
   { text: "Out of service.", tones: [TONE.DRY] },
-  { text: "System declined.", tones: [TONE.DRY] },
-  { text: "Blocked.", tones: [TONE.DRY] },
-  { text: "Denied.", tones: [TONE.DRY] },
-  { text: "Can't swing it.", tones: [TONE.DRY] },
-  { text: "Not available.", tones: [TONE.DRY] },
-  { text: "Off the table.", tones: [TONE.DRY] },
-  { text: "Request denied.", tones: [TONE.DRY] },
-  { text: "Not an option.", tones: [TONE.DRY] },
-  { text: "Access denied.", tones: [TONE.DRY] },
-  { text: "Can't do it.", tones: [TONE.DRY] },
   { text: "Not possible.", tones: [TONE.DRY] },
+  // New additions (rare)
+  { text: "Nope.", tones: [TONE.DRY] },
+  { text: "Can't commit.", tones: [TONE.DRY] },
+  { text: "Not available.", tones: [TONE.DRY] },
+  { text: "Passing.", tones: [TONE.DRY] },
+  { text: "Skipped.", tones: [TONE.DRY] },
 ];
 
 // Layer 2: AI-GENERATED MICRO-REASONS (from offline pool)
@@ -180,26 +172,23 @@ function getReasonPoolForFingerprint(fingerprint) {
 // Layer 3: PUNCHLINE (2-4 words max, ends conversation)
 // Confident refusal closer - no room for negotiation
 const PUNCHLINES = [
-  { text: "Done.", tones: [TONE.DRY] },
-  { text: "That's it.", tones: [TONE.DRY] },
-  { text: "Final answer.", tones: [TONE.DRY] },
-  { text: "Not negotiable.", tones: [TONE.DRY] },
-  { text: "End of story.", tones: [TONE.DRY] },
-  { text: "Period.", tones: [TONE.DRY] },
-  { text: "Moving on.", tones: [TONE.DRY] },
-  { text: "Closed.", tones: [TONE.DRY] },
-  { text: "Next.", tones: [TONE.DRY] },
-  { text: "Noted.", tones: [TONE.DRY] },
-  { text: "Signing off.", tones: [TONE.DRY] },
-  { text: "Message ended.", tones: [TONE.DRY] },
-  { text: "No further questions.", tones: [TONE.DRY] },
-  { text: "Case closed.", tones: [TONE.DRY] },
-  { text: "Nothing more.", tones: [TONE.DRY] },
-  { text: "Conversation over.", tones: [TONE.DRY] },
-  { text: "Full stop.", tones: [TONE.DRY] },
-  { text: "End transmission.", tones: [TONE.DRY] },
-  { text: "Out.", tones: [TONE.DRY] },
-  { text: "Hard stop.", tones: [TONE.DRY] },
+  // TOP TIER (use often)
+  { text: "No reason given.", tones: [TONE.DRY] },
+  { text: "Emotionally.", tones: [TONE.DRY] },
+  { text: "No further explanation.", tones: [TONE.DRY] },
+  { text: "End of transmission.", tones: [TONE.DRY] },
+  { text: "No comment.", tones: [TONE.DRY] },
+  { text: "Not in this universe.", tones: [TONE.DRY] },
+  // Contextual (rare)
+  { text: "That’s all.", tones: [TONE.DRY] },
+  { text: "Try again next century.", tones: [TONE.DRY] },
+  // New additions (rare)
+  { text: "By design.", tones: [TONE.DRY] },
+  { text: "As intended.", tones: [TONE.DRY] },
+  { text: "On purpose.", tones: [TONE.DRY] },
+  { text: "For personal reasons.", tones: [TONE.DRY] },
+  { text: "Per policy.", tones: [TONE.DRY] },
+  { text: "Please try never.", tones: [TONE.DRY] },
 ];
 
 // Helper: Find common tone between lists
@@ -259,8 +248,8 @@ function composeExcuse(seed, vibePreference = null, reasonPool = null) {
     reasonsToUse = nonCosmic;
   }
 
-  // Try up to 5 times to find a good combination
-  while (attempts < 5) {
+  // Try up to 10 times to find a good combination (never allow setup and punchline with same meaning)
+  while (attempts < 10) {
     // Prefer DRY/sarcastic tone for setup and reason
     const drySetups = SETUPS.filter((s) => s.tones.includes(TONE.DRY));
     setup = drySetups.length
@@ -284,6 +273,19 @@ function composeExcuse(seed, vibePreference = null, reasonPool = null) {
 
     // Find common tone across all three
     commonTone = findCommonTone(setup, reason, punchline);
+
+    // Prevent setup and punchline with same or very similar meaning
+    const setupText = setup.text.replace(/[^a-zA-Z]/g, "").toLowerCase();
+    const punchText = punchline.text.replace(/[^a-zA-Z]/g, "").toLowerCase();
+    if (setupText && punchText && setupText === punchText) {
+      attempts++;
+      continue;
+    }
+    // Prevent "Please try never." as setup (only punchline)
+    if (setup.text === "Please try never.") {
+      attempts++;
+      continue;
+    }
 
     // If vibe preference exists, weight towards it (but allow other tones)
     if (vibePreference && commonTone) {

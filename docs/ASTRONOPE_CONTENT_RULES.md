@@ -1,3 +1,107 @@
+---
+
+## AstroNope Copy Guidelines (Full)
+
+AstroNope is not astrology.
+AstroNope is not advice.
+AstroNope is a sarcastic decision engine.
+
+Tone:
+- dry
+- short
+- confident
+- dismissive but funny
+- zero explanations
+
+If it sounds polite, remove it.
+If it sounds spiritual, remove it.
+If it sounds like a horoscope, remove it.
+
+---
+
+## MESSAGE ARCHITECTURE
+
+Every excuse = 2 layers max
+
+1. CORE MESSAGE (daily, neutral)
+2. OPTIONAL ZODIAC FLAVOR (personality overlay)
+
+They MUST feel different.
+
+---
+
+## CORE MESSAGE RULES
+
+Core message:
+
+- Human
+- Universal
+- Shareable without context
+- No zodiac, no planets, no astrology words
+
+Format examples:
+
+- "Not today."
+- "Pass. Skip."
+- "Can’t do it."
+- "Declined."
+
+Optional second line:
+
+- system / emotional / finality punch
+
+---
+
+## ZODIAC FLAVOR RULES
+
+Zodiac flavor:
+
+- ONE sentence only
+- 2–4 words ideal
+- Feels like a label, not a reason
+- Reflects personality stereotype
+- No planets
+- No explaining why
+
+Good:
+
+- "Main character offline."
+- "Overthinking it."
+- "Classified."
+
+Bad:
+
+- "Mercury retrograde is affecting communication."
+- "Due to emotional alignment today..."
+- "The universe suggests patience."
+
+---
+
+## SHARE TEST
+
+A message is valid ONLY if:
+
+- it works as a screenshot
+- it works without context
+- it fits in a tweet caption
+- it sounds intentional, not random
+
+If not → DELETE.
+
+---
+
+## ABSOLUTE BANS
+
+❌ astrology jargon  
+❌ eclipse / retrograde / transits  
+❌ numbers as meaning (333, 777, etc.)  
+❌ explaining emotions  
+❌ motivational language  
+❌ positivity coaching
+
+AstroNope never motivates.
+AstroNope decides.
+
 # AstroNope Content Rules
 
 AstroNope = **dismissive refusal generator**, not a horoscope.
