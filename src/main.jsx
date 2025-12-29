@@ -31,6 +31,15 @@ function checkForUpdates() {
         console.log("New version detected. Clearing caches and reloading...");
         localStorage.setItem("astronope-app-version", newVersion);
 
+        // Unregister service worker
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.getRegistrations().then((registrations) => {
+            registrations.forEach((registration) => {
+              registration.unregister();
+            });
+          });
+        }
+
         // Clear all caches
         if ("caches" in window) {
           caches.keys().then((names) => {
@@ -40,8 +49,10 @@ function checkForUpdates() {
           });
         }
 
-        // Force reload from server
-        window.location.href = window.location.href;
+        // Force hard reload from server
+        setTimeout(() => {
+          window.location.reload(true);
+        }, 100);
       }
     })
     .catch((err) => console.log("Update check failed:", err));

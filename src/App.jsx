@@ -254,7 +254,7 @@ function App() {
           range.selectNodeContents(el);
           selection.addRange(range);
         }
-        const ok = document.execCommand?.("copy") ?? false;
+        const ok = document.execCommand ? document.execCommand("copy") : false;
         // Clear selection if we set it
         const sel = globalThis.getSelection?.();
         if (sel) sel.removeAllRanges();
@@ -274,7 +274,7 @@ function App() {
       document.body.appendChild(ta);
       ta.focus();
       ta.select();
-      const ok = document.execCommand?.("copy") ?? false;
+      const ok = document.execCommand ? document.execCommand("copy") : false;
       ta.remove();
       if (ok) return true;
     } catch (e) {
@@ -402,7 +402,9 @@ function App() {
       document.body.appendChild(ta);
       ta.select();
       try {
-        document.execCommand?.("copy");
+        if (document.execCommand) {
+          document.execCommand("copy");
+        }
         showToast("Caption copied! ✨");
         trackBrandCaptionCopy();
       } catch (e) {
