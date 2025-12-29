@@ -316,8 +316,8 @@ function App() {
       trackCopy();
       maybeShowBrandCaption();
     } else {
-      console.error("Failed to copy via all methods");
-      showToast("Copy failed. Try selecting the text.");
+      console.warn("Failed to copy via all methods");
+      // Silent fail - don't show error toast
     }
   };
 
@@ -378,13 +378,17 @@ function App() {
         trackShare("text");
         maybeShowBrandCaption();
       } catch (error) {
-        if (error.name !== "AbortError") {
-          console.error("Error sharing:", error);
-          handleCopy(); // Fallback to copy
+        // AbortError = user clicked back/cancel, silent dismiss
+        if (error.name === "AbortError") {
+          return;
         }
+        // Other errors: fallback to copy silently
+        console.warn("Share failed, falling back to copy:", error);
+        await handleCopy();
       }
     } else {
-      handleCopy(); // Fallback to copy if share not available
+      // No share API available (laptop), fallback to copy silently
+      await handleCopy();
     }
   };
 
@@ -466,13 +470,21 @@ function App() {
         const file = new File([imageBlob], "astronope-excuse.png", {
           type: "image/png",
         });
-        await navigator.share({
-          title: "AstroNope — Daily Cosmic Nope",
-          text: getShareableText(),
-          files: [file],
-        });
-        showToast("Image shared! 🎨");
-        trackImageShare();
+        try {
+          await navigator.share({
+            title: "AstroNope — Daily Cosmic Nope",
+            text: getShareableText(),
+            files: [file],
+          });
+          showToast("Image shared! 🎨");
+          trackImageShare();
+        } catch (shareError) {
+          // AbortError = user clicked back, silent dismiss
+          if (shareError.name !== "AbortError") {
+            console.warn("Share failed:", shareError);
+            showToast("Failed to share. Try downloading instead.");
+          }
+        }
       } else {
         // Fallback: download the image
         downloadImage(imageBlob);
@@ -480,7 +492,7 @@ function App() {
         trackImageShare();
       }
     } catch (error) {
-      console.error("Error sharing image:", error);
+      console.error("Error generating image:", error);
       showToast("Failed to generate image. Try again.");
     } finally {
       setIsLoading(false);
