@@ -92,7 +92,7 @@ export function getCosmicFingerprint() {
   // Device seed (from localStorage, generated once)
   let deviceSeed = localStorage.getItem("astronope_device_seed");
   if (!deviceSeed) {
-    deviceSeed = Math.random().toString(36).substr(2, 9);
+    deviceSeed = Math.random().toString(36).substring(2, 11);
     localStorage.setItem("astronope_device_seed", deviceSeed);
   }
 
@@ -230,13 +230,76 @@ function findCommonTone(setup, absurdity, punchline) {
   return null; // Skip if no compatible tone
 }
 
+// Helper: Pick setup with preference
+function pickSetup(rng) {
+  const drySetups = SETUPS.filter((s) => s.tones.includes(TONE.DRY));
+  return drySetups.length
+    ? drySetups[Math.floor(rng() * drySetups.length)]
+    : SETUPS[Math.floor(rng() * SETUPS.length)];
+}
+
+// Helper: Pick reason with preference
+function pickReason(rng, reasonsToUse) {
+  const dryReasons = reasonsToUse.filter((r) => r.tones?.includes(TONE.DRY));
+  return dryReasons.length
+    ? dryReasons[Math.floor(rng() * dryReasons.length)]
+    : reasonsToUse[Math.floor(rng() * reasonsToUse.length)];
+}
+
+// Helper: Pick punchline with preference
+function pickPunchline(rng) {
+  const nonCosmicPunchlines = PUNCHLINES.filter(
+    (p) => !containsCosmicMention(p.text)
+  );
+  const punchPool =
+    nonCosmicPunchlines.length > 0 ? nonCosmicPunchlines : PUNCHLINES;
+  const dryPunch = punchPool.filter((p) => p.tones.includes(TONE.DRY));
+  return dryPunch.length
+    ? dryPunch[Math.floor(rng() * dryPunch.length)]
+    : punchPool[Math.floor(rng() * punchPool.length)];
+}
+
+// Helper: Check if combination is valid
+function isValidCombination(setup, setupText, punchText) {
+  if (!(setupText && punchText && setupText !== punchText)) {
+    return false;
+  }
+  if (setup.text === "Please try never.") {
+    return false;
+  }
+  return true;
+}
+
+// Helper: Check if vibe matches preference
+function vibeMatchesPreference(vibePreference, commonTone) {
+  if (!vibePreference || !commonTone) return false;
+
+  if (
+    vibePreference === VIBE_BUCKETS.DRY_SARCASTIC &&
+    commonTone === TONE.DRY
+  ) {
+    return true;
+  }
+  if (
+    vibePreference === VIBE_BUCKETS.CHAOS_ENERGY &&
+    commonTone === TONE.PLAYFUL
+  ) {
+    return true;
+  }
+  if (
+    vibePreference === VIBE_BUCKETS.PEACEFUL_NOPE &&
+    commonTone === TONE.CASUAL
+  ) {
+    return true;
+  }
+  return false;
+}
+
 // Compose excuse using seeded RNG (with optional vibe preference)
 // Now uses AI_REASONS from pool instead of hardcoded ABSURDITIES
 function composeExcuse(seed, vibePreference = null, reasonPool = null) {
   const rng = mulberry32(seed);
-
-  let setup, reason, punchline, commonTone;
-  let attempts = 0;
+  const maxAttempts = 10;
 
   // Use provided pool or fallback to all reasons, but always filter out
   // any reasons that explicitly mention zodiac signs to keep core text clean.
@@ -248,89 +311,43 @@ function composeExcuse(seed, vibePreference = null, reasonPool = null) {
     reasonsToUse = nonCosmic;
   }
 
-  // Try up to 10 times to find a good combination (never allow setup and punchline with same meaning)
-  while (attempts < 10) {
-    // Prefer DRY/sarcastic tone for setup and reason
-    const drySetups = SETUPS.filter((s) => s.tones.includes(TONE.DRY));
-    setup = drySetups.length
-      ? drySetups[Math.floor(rng() * drySetups.length)]
-      : SETUPS[Math.floor(rng() * SETUPS.length)];
+  // Try up to maxAttempts times to find a good combination
+  for (let attempts = 0; attempts < maxAttempts; attempts++) {
+    const setup = pickSetup(rng);
+    const reason = pickReason(rng, reasonsToUse);
+    const punchline = pickPunchline(rng);
+    const commonTone = findCommonTone(setup, reason, punchline);
 
-    const dryReasons = reasonsToUse.filter((r) => r.tones?.includes(TONE.DRY));
-    reason = dryReasons.length
-      ? dryReasons[Math.floor(rng() * dryReasons.length)]
-      : reasonsToUse[Math.floor(rng() * reasonsToUse.length)];
-    // Prefer non-cosmic punchlines to keep core neutral
-    const nonCosmicPunchlines = PUNCHLINES.filter(
-      (p) => !containsCosmicMention(p.text)
-    );
-    const punchPool =
-      nonCosmicPunchlines.length > 0 ? nonCosmicPunchlines : PUNCHLINES;
-    const dryPunch = punchPool.filter((p) => p.tones.includes(TONE.DRY));
-    punchline = dryPunch.length
-      ? dryPunch[Math.floor(rng() * dryPunch.length)]
-      : punchPool[Math.floor(rng() * punchPool.length)];
-
-    // Find common tone across all three
-    commonTone = findCommonTone(setup, reason, punchline);
-
-    // Prevent setup and punchline with same or very similar meaning
+    // Validate combination
     const setupText = setup.text.replaceAll(/[^a-zA-Z]/g, "").toLowerCase();
     const punchText = punchline.text.replaceAll(/[^a-zA-Z]/g, "").toLowerCase();
-    if (setupText && punchText && setupText !== punchText) {
-      // Good - continue processing this combination
-    } else {
-      // Skip if texts are same or invalid
-      attempts++;
-      continue;
-    }
-    // Prevent "Please try never." as setup (only punchline)
-    if (setup.text === "Please try never.") {
-      attempts++;
+
+    if (!isValidCombination(setup, setupText, punchText)) {
       continue;
     }
 
-    // If vibe preference exists, weight towards it (but allow other tones)
-    if (vibePreference && commonTone) {
-      // For dry vibes, prefer DRY tone
-      if (
-        vibePreference === VIBE_BUCKETS.DRY_SARCASTIC &&
-        commonTone === TONE.DRY
-      ) {
-        break;
-      }
-      // For playful vibes, prefer PLAYFUL tone
-      if (
-        vibePreference === VIBE_BUCKETS.CHAOS_ENERGY &&
-        commonTone === TONE.PLAYFUL
-      ) {
-        break;
-      }
-      // For casual vibes, prefer CASUAL tone
-      if (
-        vibePreference === VIBE_BUCKETS.PEACEFUL_NOPE &&
-        commonTone === TONE.CASUAL
-      ) {
-        break;
-      }
+    // Check vibe match
+    if (vibeMatchesPreference(vibePreference, commonTone)) {
+      const reasonText =
+        reason.text.charAt(0).toUpperCase() + reason.text.slice(1);
+      return `${setup.text} ${reasonText}. ${punchline.text}`;
     }
 
-    if (commonTone) break; // Found a good combo (even if not perfect vibe match)
-
-    attempts++;
+    // Accept if tone matches even without perfect vibe match
+    if (commonTone) {
+      const reasonText =
+        reason.text.charAt(0).toUpperCase() + reason.text.slice(1);
+      return `${setup.text} ${reasonText}. ${punchline.text}`;
+    }
   }
 
   // Fallback if no match found (shouldn't happen, but safety)
-  if (!commonTone) {
-    setup = SETUPS[0];
-    reason = reasonsToUse[0] || {
-      text: "The universe had other plans",
-      tones: [TONE.CASUAL],
-    };
-    punchline = PUNCHLINES[0];
-  }
-
-  // Capitalize reason text properly
+  const setup = SETUPS[0];
+  const reason = reasonsToUse[0] || {
+    text: "The universe had other plans",
+    tones: [TONE.CASUAL],
+  };
+  const punchline = PUNCHLINES[0];
   const reasonText = reason.text.charAt(0).toUpperCase() + reason.text.slice(1);
 
   return `${setup.text} ${reasonText}. ${punchline.text}`;
