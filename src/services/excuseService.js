@@ -100,8 +100,8 @@ export function getCosmicFingerprint() {
   const fingerprint = `${tz}-${dow}-${month}-${hour}-${timeOfDay}-${deviceSeed}`;
   let hash = 0;
   for (let i = 0; i < fingerprint.length; i++) {
-    hash = (hash << 5) - hash + fingerprint.charCodeAt(i);
-    hash |= 0;
+    hash = (hash << 5) - hash + fingerprint.codePointAt(i);
+    hash = Math.trunc(hash);
   }
 
   return Math.abs(hash);
@@ -275,9 +275,12 @@ function composeExcuse(seed, vibePreference = null, reasonPool = null) {
     commonTone = findCommonTone(setup, reason, punchline);
 
     // Prevent setup and punchline with same or very similar meaning
-    const setupText = setup.text.replace(/[^a-zA-Z]/g, "").toLowerCase();
-    const punchText = punchline.text.replace(/[^a-zA-Z]/g, "").toLowerCase();
-    if (setupText && punchText && setupText === punchText) {
+    const setupText = setup.text.replaceAll(/[^a-zA-Z]/g, "").toLowerCase();
+    const punchText = punchline.text.replaceAll(/[^a-zA-Z]/g, "").toLowerCase();
+    if (setupText && punchText && setupText !== punchText) {
+      // Good - continue processing this combination
+    } else {
+      // Skip if texts are same or invalid
       attempts++;
       continue;
     }

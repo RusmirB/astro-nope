@@ -126,6 +126,6 @@ export function downloadImage(blob, filename = "astronope-excuse.png") {
   link.download = filename;
   document.body.appendChild(link);
   link.click();
-  document.body.removeChild(link);
+  link.remove();
   URL.revokeObjectURL(url);
 }
