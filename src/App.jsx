@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 import {
+  generateExcuse,
+  generateZodiacExcuse,
   generatePersonalizedExcuse,
-  getUserVibe,
 } from "./services/excuseService";
 import { getDailyExcuse } from "./services/dailyExcuseService";
 import InstallPrompt from "./components/InstallPrompt";
@@ -25,6 +26,7 @@ import {
   markBrandCaptionShown,
   incrementSessionShareCount,
 } from "./utils/brand";
+import { getUserVibe } from "./services/excuseService";
 import {
   addFavorite,
   removeFavorite,
@@ -57,7 +59,7 @@ function App() {
   const [isDailyMessage, setIsDailyMessage] = useState(true);
   const [showCosmicTransition, setShowCosmicTransition] = useState(false);
   const [showUniverseIntro, setShowUniverseIntro] = useState(true);
-  const [setStreak] = useState(0);
+  const [streak, setStreak] = useState(0);
   const [todayDate, setTodayDate] = useState("");
 
   const getBaseExcuse = () => {
@@ -146,9 +148,7 @@ function App() {
         setIsDailyMessage(true);
         setIsLoading(false);
       }
-    } catch (e) {
-      // Ignore parsing errors for localStorage
-    }
+    } catch {}
 
     (async () => {
       try {
@@ -186,7 +186,23 @@ function App() {
     }
   }, [excuse]);
 
-  // Uklanjamo loadNewExcuse - nema rerollova
+  const loadNewExcuse = async () => {
+    // Hide brand caption while fetching a new excuse
+    if (brandCaptionTimer) clearTimeout(brandCaptionTimer);
+    setShowBrandCaption(false);
+    setIsLoading(true);
+    try {
+      const newExcuse = await generateExcuse();
+      setExcuse(newExcuse);
+      setIsDailyMessage(false);
+      trackNewExcuse();
+    } catch (error) {
+      console.error("Error generating excuse:", error);
+      setExcuse("The universe is having connectivity issues. Try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Uklanjamo handleReroll - nema rerollova
 
@@ -235,7 +251,6 @@ function App() {
     if (
       typeof navigator !== "undefined" &&
       navigator.clipboard &&
-      typeof window !== "undefined" &&
       window.isSecureContext
     ) {
       try {
@@ -247,7 +262,7 @@ function App() {
     // Selection-based fallback: select the visible excuse element and copy
     try {
       const el = document.querySelector(".excuse-text");
-      if (el && typeof window !== "undefined" && window.getSelection) {
+      if (el) {
         const selection = window.getSelection();
         if (selection) {
           selection.removeAllRanges();
@@ -255,18 +270,13 @@ function App() {
           range.selectNodeContents(el);
           selection.addRange(range);
         }
-        const ok = document.execCommand ? document.execCommand("copy") : false;
+        const ok = document.execCommand("copy");
         // Clear selection if we set it
-        const sel =
-          typeof window !== "undefined" && window.getSelection
-            ? window.getSelection()
-            : null;
+        const sel = window.getSelection();
         if (sel) sel.removeAllRanges();
         if (ok) return true;
       }
-    } catch (e) {
-      // Ignore selection-based copy errors
-    }
+    } catch {}
 
     // Hidden textarea fallback
     try {
@@ -278,12 +288,10 @@ function App() {
       document.body.appendChild(ta);
       ta.focus();
       ta.select();
-      const ok = document.execCommand ? document.execCommand("copy") : false;
-      ta.remove();
+      const ok = document.execCommand("copy");
+      document.body.removeChild(ta);
       if (ok) return true;
-    } catch (e) {
-      // Ignore textarea copy fallback errors
-    }
+    } catch {}
 
     return false;
   };
@@ -339,12 +347,7 @@ function App() {
       try {
         // Try to share as image if possible
         try {
-          const { core, flavor } = getSplitExcuse();
-          const imageBlob = await generateExcuseImage(
-            core,
-            flavor,
-            selectedZodiac
-          );
+          const imageBlob = await generateExcuseImage(getBaseExcuse());
           if (
             navigator.canShare &&
             navigator.canShare({
@@ -366,8 +369,7 @@ function App() {
             return;
           }
         } catch (imgError) {
-          // Fall through to text share if image share fails
-          console.warn("Image share failed:", imgError);
+          // Fall through to text share
         }
 
         // Fallback to text share
@@ -406,15 +408,11 @@ function App() {
       document.body.appendChild(ta);
       ta.select();
       try {
-        if (document.execCommand) {
-          document.execCommand("copy");
-        }
+        document.execCommand("copy");
         showToast("Caption copied! ✨");
         trackBrandCaptionCopy();
-      } catch (e) {
-        // Ignore clipboard fallback errors
-      }
-      ta.remove();
+      } catch {}
+      document.body.removeChild(ta);
     }
   };
 
