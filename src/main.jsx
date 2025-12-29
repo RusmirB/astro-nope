@@ -4,6 +4,16 @@ import App from "./App";
 import "./index.css";
 import { Analytics } from "@vercel/analytics/react";
 
+// Helper: Clear all caches (DRY)
+function clearAllCaches() {
+  if ("caches" in window) {
+    return caches.keys().then((names) => {
+      return Promise.all(names.map((name) => caches.delete(name)));
+    });
+  }
+  return Promise.resolve();
+}
+
 // Check for version updates and force refresh if needed
 let updateChecked = false;
 
@@ -39,19 +49,12 @@ function checkForUpdates() {
           });
         }
 
-        // Clear all caches
-        if ("caches" in window) {
-          caches.keys().then((names) => {
-            names.forEach((name) => {
-              caches.delete(name);
-            });
-          });
-        }
-
-        // Force hard reload from server
-        setTimeout(() => {
-          window.location.reload(true);
-        }, 100);
+        // Clear all caches and reload
+        clearAllCaches().then(() => {
+          setTimeout(() => {
+            window.location.reload();
+          }, 100);
+        });
       }
     })
     .catch((err) => console.log("Update check failed:", err));
@@ -82,22 +85,13 @@ if ("serviceWorker" in navigator) {
               newWorker.state === "installed" &&
               navigator.serviceWorker.controller
             ) {
-              // New service worker available
+              // New service worker available - clear cache and reload
               console.log("New app version available. Auto-refreshing...");
-
-              // Clear cache and reload
-              if ("caches" in window) {
-                caches.keys().then((names) => {
-                  names.forEach((name) => {
-                    caches.delete(name);
-                  });
-                });
-              }
-
-              // Auto-refresh the page to get the new version
-              setTimeout(() => {
-                window.location.reload();
-              }, 1000);
+              clearAllCaches().then(() => {
+                setTimeout(() => {
+                  window.location.reload();
+                }, 1000);
+              });
             }
           });
         });

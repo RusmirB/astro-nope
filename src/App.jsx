@@ -562,32 +562,39 @@ function App() {
               <p>Consulting the cosmos...</p>
             </div>
           ) : (
-            <div className="excuse-card">
-              <div className="excuse-date">{todayDate}</div>
+            (() => {
+              const splitExcuse = getSplitExcuse();
+              return (
+                <div className="excuse-card">
+                  <div className="excuse-date">{todayDate}</div>
 
-              {isDailyMessage && (
-                <div className="daily-label">This is your AstroNope today</div>
-              )}
-              <div className="excuse-text">
-                <div className="excuse-core">{getSplitExcuse().core}</div>
-                {getSplitExcuse().flavor && (
-                  <div className="excuse-flavor">{getSplitExcuse().flavor}</div>
-                )}
-              </div>
-              {isDailyMessage && (
-                <div className="daily-hint">No further questions.</div>
-              )}
-              {selectedZodiac && (
-                <div className="zodiac-indicator">
-                  ✨{" "}
-                  {selectedZodiac.charAt(0).toUpperCase() +
-                    selectedZodiac.slice(1)}{" "}
-                  energy
+                  {isDailyMessage && (
+                    <div className="daily-label">
+                      This is your AstroNope today
+                    </div>
+                  )}
+                  <div className="excuse-text">
+                    <div className="excuse-core">{splitExcuse.core}</div>
+                    {splitExcuse.flavor && (
+                      <div className="excuse-flavor">{splitExcuse.flavor}</div>
+                    )}
+                  </div>
+                  {isDailyMessage && (
+                    <div className="daily-hint">No further questions.</div>
+                  )}
+                  {selectedZodiac && (
+                    <div className="zodiac-indicator">
+                      ✨{" "}
+                      {selectedZodiac.charAt(0).toUpperCase() +
+                        selectedZodiac.slice(1)}{" "}
+                      energy
+                    </div>
+                  )}
+
+                  <div className="excuse-brand">astronope.com</div>
                 </div>
-              )}
-
-              <div className="excuse-brand">astronope.com</div>
-            </div>
+              );
+            })()
           )}
         </div>
 
