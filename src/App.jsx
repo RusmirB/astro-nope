@@ -235,7 +235,8 @@ function App() {
     if (
       typeof navigator !== "undefined" &&
       navigator.clipboard &&
-      globalThis.isSecureContext
+      typeof window !== "undefined" &&
+      window.isSecureContext
     ) {
       try {
         await navigator.clipboard.writeText(text);
@@ -246,8 +247,8 @@ function App() {
     // Selection-based fallback: select the visible excuse element and copy
     try {
       const el = document.querySelector(".excuse-text");
-      if (el && globalThis.getSelection) {
-        const selection = globalThis.getSelection();
+      if (el && typeof window !== "undefined" && window.getSelection) {
+        const selection = window.getSelection();
         if (selection) {
           selection.removeAllRanges();
           const range = document.createRange();
@@ -256,7 +257,10 @@ function App() {
         }
         const ok = document.execCommand ? document.execCommand("copy") : false;
         // Clear selection if we set it
-        const sel = globalThis.getSelection ? globalThis.getSelection() : null;
+        const sel =
+          typeof window !== "undefined" && window.getSelection
+            ? window.getSelection()
+            : null;
         if (sel) sel.removeAllRanges();
         if (ok) return true;
       }
@@ -731,8 +735,8 @@ function App() {
 }
 
 // QA helper: list flavored outputs for current base across all signs
-if (typeof globalThis !== "undefined") {
-  globalThis.__astroNopeInspect = () => {
+if (typeof window !== "undefined") {
+  window.__astroNopeInspect = () => {
     try {
       const appRoot = document.getElementById("root");
       // Find base via a temporary computation using saved seed
