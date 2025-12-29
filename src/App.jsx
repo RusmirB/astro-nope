@@ -17,11 +17,13 @@ import {
   trackImageShare,
   trackBrandCaptionShown,
   trackBrandCaptionCopy,
+  trackBrandCaptionDismissed,
 } from "./utils/analytics";
 import {
   getSuggestedBrandCaption,
   hasBrandCaptionShown,
   markBrandCaptionShown,
+  incrementSessionShareCount,
 } from "./utils/brand";
 import {
   addFavorite,
