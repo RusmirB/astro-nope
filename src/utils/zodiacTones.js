@@ -18,9 +18,9 @@ export const ZODIAC_SIGNS = [
   { name: "Cancer", symbol: "♋", key: "cancer" },
   { name: "Leo", symbol: "♌", key: "leo" },
   { name: "Virgo", symbol: "♍", key: "virgo" },
-
-  // PLANET_FLAVORS: ultra-short, caption-ready overlays for each zodiac sign.
-  // See docs/ASTRONOPE_CONTENT_RULES.md for full copy guidelines.
+  { name: "Libra", symbol: "♎", key: "libra" },
+  { name: "Scorpio", symbol: "♏", key: "scorpio" },
+  { name: "Sagittarius", symbol: "♐", key: "sagittarius" },
   { name: "Capricorn", symbol: "♑", key: "capricorn" },
   { name: "Aquarius", symbol: "♒", key: "aquarius" },
   { name: "Pisces", symbol: "♓", key: "pisces" },
