@@ -246,8 +246,8 @@ function App() {
     // Selection-based fallback: select the visible excuse element and copy
     try {
       const el = document.querySelector(".excuse-text");
-      if (el) {
-        const selection = globalThis.getSelection?.();
+      if (el && globalThis.getSelection) {
+        const selection = globalThis.getSelection();
         if (selection) {
           selection.removeAllRanges();
           const range = document.createRange();
@@ -256,7 +256,7 @@ function App() {
         }
         const ok = document.execCommand ? document.execCommand("copy") : false;
         // Clear selection if we set it
-        const sel = globalThis.getSelection?.();
+        const sel = globalThis.getSelection ? globalThis.getSelection() : null;
         if (sel) sel.removeAllRanges();
         if (ok) return true;
       }
