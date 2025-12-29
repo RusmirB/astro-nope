@@ -325,9 +325,14 @@ function App() {
     // Use Web Share API (works on mobile browsers and PWA)
     if (navigator.share) {
       try {
-        // Try to share as image if possible
+        // Try to share as image if possible (primarily mobile)
         try {
-          const imageBlob = await generateExcuseImage(getBaseExcuse());
+          const { core, flavor } = getSplitExcuse();
+          const imageBlob = await generateExcuseImage(
+            core,
+            flavor,
+            selectedZodiac
+          );
           if (
             navigator.canShare &&
             navigator.canShare({
@@ -349,7 +354,7 @@ function App() {
             return;
           }
         } catch (imgError) {
-          // Fall through to text share
+          // Fall through to text share (Firefox, desktop browsers)
         }
 
         // Fallback to text share
