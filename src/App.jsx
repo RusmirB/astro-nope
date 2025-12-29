@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import {
   generateExcuse,
-  generateZodiacExcuse,
   generatePersonalizedExcuse,
+  getUserVibe,
 } from "./services/excuseService";
 import { getDailyExcuse } from "./services/dailyExcuseService";
 import InstallPrompt from "./components/InstallPrompt";
@@ -24,7 +24,6 @@ import {
   hasBrandCaptionShown,
   markBrandCaptionShown,
 } from "./utils/brand";
-import { getUserVibe } from "./services/excuseService";
 import {
   addFavorite,
   removeFavorite,
@@ -57,7 +56,7 @@ function App() {
   const [isDailyMessage, setIsDailyMessage] = useState(true);
   const [showCosmicTransition, setShowCosmicTransition] = useState(false);
   const [showUniverseIntro, setShowUniverseIntro] = useState(true);
-  const [streak, setStreak] = useState(0);
+  const [setStreak] = useState(0);
   const [todayDate, setTodayDate] = useState("");
 
   const getBaseExcuse = () => {
@@ -184,23 +183,7 @@ function App() {
     }
   }, [excuse]);
 
-  const loadNewExcuse = async () => {
-    // Hide brand caption while fetching a new excuse
-    if (brandCaptionTimer) clearTimeout(brandCaptionTimer);
-    setShowBrandCaption(false);
-    setIsLoading(true);
-    try {
-      const newExcuse = await generateExcuse();
-      setExcuse(newExcuse);
-      setIsDailyMessage(false);
-      trackNewExcuse();
-    } catch (error) {
-      console.error("Error generating excuse:", error);
-      setExcuse("The universe is having connectivity issues. Try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // Uklanjamo loadNewExcuse - nema rerollova
 
   // Uklanjamo handleReroll - nema rerollova
 
@@ -249,7 +232,7 @@ function App() {
     if (
       typeof navigator !== "undefined" &&
       navigator.clipboard &&
-      window.isSecureContext
+      globalThis.isSecureContext
     ) {
       try {
         await navigator.clipboard.writeText(text);
@@ -261,7 +244,7 @@ function App() {
     try {
       const el = document.querySelector(".excuse-text");
       if (el) {
-        const selection = window.getSelection();
+        const selection = globalThis.getSelection?.();
         if (selection) {
           selection.removeAllRanges();
           const range = document.createRange();
@@ -270,7 +253,7 @@ function App() {
         }
         const ok = document.execCommand("copy");
         // Clear selection if we set it
-        const sel = window.getSelection();
+        const sel = globalThis.getSelection?.();
         if (sel) sel.removeAllRanges();
         if (ok) return true;
       }
@@ -731,8 +714,8 @@ function App() {
 }
 
 // QA helper: list flavored outputs for current base across all signs
-if (typeof window !== "undefined") {
-  window.__astroNopeInspect = () => {
+if (typeof globalThis !== "undefined") {
+  globalThis.__astroNopeInspect = () => {
     try {
       const appRoot = document.getElementById("root");
       // Find base via a temporary computation using saved seed
