@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 import {
-  generateExcuse,
-  generateZodiacExcuse,
   generatePersonalizedExcuse,
+  getUserVibe,
 } from "./services/excuseService";
 import { getDailyExcuse } from "./services/dailyExcuseService";
 import InstallPrompt from "./components/InstallPrompt";
@@ -26,7 +25,6 @@ import {
   markBrandCaptionShown,
   incrementSessionShareCount,
 } from "./utils/brand";
-import { getUserVibe } from "./services/excuseService";
 import {
   addFavorite,
   removeFavorite,
@@ -59,7 +57,7 @@ function App() {
   const [isDailyMessage, setIsDailyMessage] = useState(true);
   const [showCosmicTransition, setShowCosmicTransition] = useState(false);
   const [showUniverseIntro, setShowUniverseIntro] = useState(true);
-  const [streak, setStreak] = useState(0);
+  const [, setStreak] = useState(0);
   const [todayDate, setTodayDate] = useState("");
 
   const getBaseExcuse = () => {
@@ -186,25 +184,7 @@ function App() {
     }
   }, [excuse]);
 
-  const loadNewExcuse = async () => {
-    // Hide brand caption while fetching a new excuse
-    if (brandCaptionTimer) clearTimeout(brandCaptionTimer);
-    setShowBrandCaption(false);
-    setIsLoading(true);
-    try {
-      const newExcuse = await generateExcuse();
-      setExcuse(newExcuse);
-      setIsDailyMessage(false);
-      trackNewExcuse();
-    } catch (error) {
-      console.error("Error generating excuse:", error);
-      setExcuse("The universe is having connectivity issues. Try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Uklanjamo handleReroll - nema rerollova
+  // Uklanjamo loadNewExcuse - nema rerollova
 
   const updateFavoritesList = () => {
     setFavorites(getFavorites());
@@ -289,7 +269,7 @@ function App() {
       ta.focus();
       ta.select();
       const ok = document.execCommand("copy");
-      document.body.removeChild(ta);
+      ta.remove();
       if (ok) return true;
     } catch {}
 
@@ -412,7 +392,7 @@ function App() {
         showToast("Caption copied! ✨");
         trackBrandCaptionCopy();
       } catch {}
-      document.body.removeChild(ta);
+      ta.remove();
     }
   };
 
@@ -736,7 +716,6 @@ function App() {
 if (typeof window !== "undefined") {
   window.__astroNopeInspect = () => {
     try {
-      const appRoot = document.getElementById("root");
       // Find base via a temporary computation using saved seed
       const saved = JSON.parse(
         localStorage.getItem("astronope_daily_seed") || "null"
