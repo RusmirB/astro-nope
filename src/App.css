@@ -484,6 +484,11 @@
   animation: toastSlideIn 0.3s ease-out;
   box-shadow: 0 4px 20px rgba(102, 126, 234, 0.5);
   backdrop-filter: blur(10px);
+  max-width: calc(100vw - 40px);
+  text-align: center;
+  white-space: normal;
+  word-wrap: break-word;
+  line-height: 1.4;
 }
 
 @keyframes toastSlideIn {
