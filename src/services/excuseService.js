@@ -372,7 +372,7 @@ export function generatePersonalizedExcuse(seedOverride = null) {
 
   // Use provided seed or fingerprint as seed for deterministic but unique excuse
   // Different users get different excuses at same time
-  const seed = seedOverride !== null ? seedOverride : fingerprint * 7919; // Prime multiplier for better distribution
+  const seed = seedOverride === null ? fingerprint * 7919 : seedOverride; // Prime multiplier for better distribution
 
   return composeExcuse(seed, vibe, reasonPool);
 }
