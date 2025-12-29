@@ -335,7 +335,12 @@ function App() {
       try {
         // Try to share as image if possible
         try {
-          const imageBlob = await generateExcuseImage(getBaseExcuse());
+          const { core, flavor } = getSplitExcuse();
+          const imageBlob = await generateExcuseImage(
+            core,
+            flavor,
+            selectedZodiac
+          );
           if (
             navigator.canShare &&
             navigator.canShare({
