@@ -444,50 +444,48 @@ export async function generateZodiacExcuse(zodiacSign, seedOverride = null) {
   // Get the tones for this zodiac sign
   const zodiacTones = SIGN_TONES[zodiacSign];
 
-  // We want to find an excuse that has at least one of the zodiac's tones
-  let newExcuse;
-  let attempts = 0;
-  const maxAttempts = 15;
-
-  do {
-    // Use provided seed or generate random one
+  // Generate excuse that matches zodiac tones
+  const generateZodiacExcuse = () => {
     const randomSeed = seedOverride
-      ? (seedOverride + attempts) * 1000 + (Date.now() % 1000)
+      ? (seedOverride + Math.random() * 1000000) * 1000 + (Date.now() % 1000)
       : (Date.now() + Math.random() * 1000000) % 2147483647;
     const rng = mulberry32(randomSeed);
 
-    let setup, reason, punchline, commonTone;
-    let innerAttempts = 0;
-
     // Try to find setup, reason, punchline that match zodiac tones
-    while (innerAttempts < 10) {
-      setup = SETUPS[Math.floor(rng() * SETUPS.length)];
+    for (let innerAttempts = 0; innerAttempts < 10; innerAttempts++) {
+      const setup = SETUPS[Math.floor(rng() * SETUPS.length)];
       // Use filtered pool to avoid zodiac mentions in the reason
-      reason =
+      const reason =
         filteredReasonPool[Math.floor(rng() * filteredReasonPool.length)] ||
         aiReasons.reasons.find((r) => !containsZodiacMention(r.text)) ||
         aiReasons.reasons[0];
-      punchline = PUNCHLINES[Math.floor(rng() * PUNCHLINES.length)];
+      const punchline = PUNCHLINES[Math.floor(rng() * PUNCHLINES.length)];
 
-      commonTone = findCommonTone(setup, reason, punchline);
+      const commonTone = findCommonTone(setup, reason, punchline);
 
       // Check if this tone matches any of the zodiac's preferred tones
       if (commonTone && zodiacTones.includes(commonTone)) {
-        break; // Found a good match for this zodiac
+        const reasonText =
+          reason.text.charAt(0).toUpperCase() + reason.text.slice(1);
+        return `${setup.text} ${reasonText}. ${punchline.text}`;
       }
-
-      innerAttempts++;
     }
 
-    // Compose the excuse
+    // Fallback if no perfect match
+    const fallbackSetup = SETUPS[Math.floor(Math.random() * SETUPS.length)];
+    const fallbackReason =
+      filteredReasonPool[
+        Math.floor(Math.random() * filteredReasonPool.length)
+      ] || aiReasons.reasons[0];
+    const fallbackPunchline =
+      PUNCHLINES[Math.floor(Math.random() * PUNCHLINES.length)];
     const reasonText =
-      reason.text.charAt(0).toUpperCase() + reason.text.slice(1);
-    newExcuse = `${setup.text} ${reasonText}. ${punchline.text}`;
+      fallbackReason.text.charAt(0).toUpperCase() +
+      fallbackReason.text.slice(1);
+    return `${fallbackSetup.text} ${reasonText}. ${fallbackPunchline.text}`;
+  };
 
-    // Zodiac excuse is explicit user action, no need to avoid recent excuses
-    // (Different from daily random which should avoid repeats)
-    break;
-  } while (attempts < maxAttempts);
+  const newExcuse = generateZodiacExcuse();
 
   // Don't track zodiac excuses in recentExcuses (explicit user action)
   return newExcuse;
