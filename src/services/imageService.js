@@ -105,14 +105,22 @@ export async function generateExcuseImage(
   );
 
   // Convert to blob
-  return new Promise((resolve) => {
-    canvas.toBlob(
-      (blob) => {
-        resolve(blob);
-      },
-      "image/png",
-      0.95
-    );
+  return new Promise((resolve, reject) => {
+    try {
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            resolve(blob);
+          } else {
+            reject(new Error("Failed to create blob from canvas"));
+          }
+        },
+        "image/png",
+        0.95
+      );
+    } catch (error) {
+      reject(error);
+    }
   });
 }
 
