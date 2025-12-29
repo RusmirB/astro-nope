@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import {
   generatePersonalizedExcuse,
+  generateContextAwareExcuse,
+  getCurrentTimeContext,
   getUserVibe,
 } from "./services/excuseService";
 import { getDailyExcuse } from "./services/dailyExcuseService";
@@ -57,11 +59,19 @@ function App() {
   const [isDailyMessage, setIsDailyMessage] = useState(true);
   const [showCosmicTransition, setShowCosmicTransition] = useState(false);
   const [showUniverseIntro, setShowUniverseIntro] = useState(true);
-  const [, setStreak] = useState(0);
+  const [streak, setStreak] = useState(0);
   const [todayDate, setTodayDate] = useState("");
+  const [timeContext, setTimeContext] = useState(getCurrentTimeContext());
+  const [showContextExcuse, setShowContextExcuse] = useState(false);
+  const [showMerchBanner, setShowMerchBanner] = useState(false);
+  const [shareCount, setShareCount] = useState(0);
 
   const getBaseExcuse = () => {
     if (isDailyMessage && baseSeed !== null) {
+      // If context mode is active, generate context-aware excuse
+      if (showContextExcuse) {
+        return generateContextAwareExcuse(baseSeed);
+      }
       return generatePersonalizedExcuse(baseSeed);
     }
     return excuse;
@@ -289,6 +299,16 @@ function App() {
     setBrandCaptionTimer(t);
     markBrandCaptionShown();
     trackBrandCaptionShown();
+    
+    // Check if we should show merch banner (after 3+ shares)
+    const newCount = shareCount;
+    setShareCount(newCount);
+    if (newCount >= 3 && !localStorage.getItem('astronope_merch_shown')) {
+      setTimeout(() => {
+        setShowMerchBanner(true);
+        localStorage.setItem('astronope_merch_shown', 'true');
+      }, 2000);
+    }
   };
 
   const handleCopy = async () => {
@@ -557,6 +577,13 @@ function App() {
         )}
       </button>
 
+      {/* Streak Counter - Top Left */}
+      {streak > 0 && (
+        <div className="streak-counter" title={`${streak} day streak`}>
+          {streak >= 3 ? "🔥" : "⭐"} {streak}
+        </div>
+      )}
+
       <div className="container">
         {/* ...existing code... */}
 
@@ -571,11 +598,13 @@ function App() {
               const splitExcuse = getSplitExcuse();
               return (
                 <div className="excuse-card">
-                  <div className="excuse-date">{todayDate}</div>
+                  <div className="excuse-date">
+                    {timeContext.emoji} {todayDate}
+                  </div>
 
                   {isDailyMessage && (
                     <div className="daily-label">
-                      This is your AstroNope today
+                      {showContextExcuse ? timeContext.label : "This is your AstroNope today"}
                     </div>
                   )}
                   <div className="excuse-text">
@@ -618,6 +647,20 @@ function App() {
             {selectedZodiac
               ? `Change zodiac (${selectedZodiac}) ✨`
               : "Blame my zodiac ✨"}
+          </button>
+          
+          {/* Context Toggle Button */}
+          <button
+            className="btn-context-toggle"
+            onClick={() => {
+              setShowContextExcuse(!showContextExcuse);
+              setTimeContext(getCurrentTimeContext());
+              showToast(showContextExcuse ? "Daily excuse" : `${getCurrentTimeContext().label}`);
+            }}
+            disabled={isLoading || !baseSeed}
+            title={showContextExcuse ? "Show daily excuse" : "Show excuse for this time"}
+          >
+            {showContextExcuse ? "📅 Daily" : `${timeContext.emoji} Now`}
           </button>
         </div>
 
@@ -708,6 +751,42 @@ function App() {
               >
                 ×
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* Merch Banner - Show after 3+ shares */}
+        {showMerchBanner && (
+          <div className="merch-banner">
+            <button 
+              className="merch-banner-close"
+              onClick={() => setShowMerchBanner(false)}
+              aria-label="Close merch banner"
+            >
+              ×
+            </button>
+            <div className="merch-banner-content">
+              <div className="merch-banner-title">🌌 Wear Your Excuse</div>
+              <p className="merch-banner-text">
+                {getBaseExcuse().split('.')[0]} on a t-shirt? Why not.
+              </p>
+              <a 
+                href="https://astronope.com/merch" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="merch-banner-button"
+                onClick={() => {
+                  // Track merch click
+                  if (typeof window !== 'undefined' && window.gtag) {
+                    window.gtag('event', 'merch_click', {
+                      event_category: 'Monetization',
+                      event_label: 'Merch Banner Click'
+                    });
+                  }
+                }}
+              >
+                Browse Merch →
+              </a>
             </div>
           </div>
         )}

@@ -70,6 +70,23 @@ function mulberry32(seed) {
   };
 }
 
+// Context labels for different times of day (for UI display)
+export const TIME_CONTEXTS = {
+  MORNING: { label: "Morning Excuse", time: "5-12", emoji: "☀️" },
+  AFTERNOON: { label: "Afternoon Excuse", time: "12-17", emoji: "📅" },
+  EVENING: { label: "Evening Excuse", time: "17-21", emoji: "🌆" },
+  NIGHT: { label: "Night Excuse", time: "21-5", emoji: "🌙" }
+};
+
+// Get current time context
+export function getCurrentTimeContext() {
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour < 12) return TIME_CONTEXTS.MORNING;
+  if (hour >= 12 && hour < 17) return TIME_CONTEXTS.AFTERNOON;
+  if (hour >= 17 && hour < 21) return TIME_CONTEXTS.EVENING;
+  return TIME_CONTEXTS.NIGHT;
+}
+
 // Generate cosmic fingerprint (timezone + time-of-day + calendar + device seed)
 export function getCosmicFingerprint() {
   const now = new Date();
@@ -375,6 +392,33 @@ export function generatePersonalizedExcuse(seedOverride = null) {
   const seed = seedOverride === null ? fingerprint * 7919 : seedOverride; // Prime multiplier for better distribution
 
   return composeExcuse(seed, vibe, reasonPool);
+}
+
+// Generate context-aware excuse for current time of day
+// Uses same daily seed but modifies it based on time context for variety
+export function generateContextAwareExcuse(baseSeed) {
+  const hour = new Date().getHours();
+  let contextModifier;
+  
+  // Add different prime multiplier for each time period
+  if (hour >= 5 && hour < 12) {
+    contextModifier = 11; // Morning
+  } else if (hour >= 12 && hour < 17) {
+    contextModifier = 13; // Afternoon
+  } else if (hour >= 17 && hour < 21) {
+    contextModifier = 17; // Evening
+  } else {
+    contextModifier = 19; // Night
+  }
+  
+  const fingerprint = getCosmicFingerprint();
+  const vibe = getVibeForUser(fingerprint);
+  const reasonPool = getReasonPoolForFingerprint(fingerprint);
+  
+  // Modify seed with context multiplier to get different excuse for same day
+  const contextSeed = baseSeed * contextModifier;
+  
+  return composeExcuse(contextSeed, vibe, reasonPool);
 }
 
 // Expose current user's vibe for UI pairing (e.g., brand captions)
