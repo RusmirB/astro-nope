@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 import {
-  generateExcuse,
   generatePersonalizedExcuse,
   getUserVibe,
 } from "./services/excuseService";
@@ -145,7 +144,9 @@ function App() {
         setIsDailyMessage(true);
         setIsLoading(false);
       }
-    } catch {}
+    } catch (e) {
+      // Ignore parsing errors for localStorage
+    }
 
     (async () => {
       try {
@@ -251,13 +252,15 @@ function App() {
           range.selectNodeContents(el);
           selection.addRange(range);
         }
-        const ok = document.execCommand("copy");
+        const ok = document.execCommand?.("copy") ?? false;
         // Clear selection if we set it
         const sel = globalThis.getSelection?.();
         if (sel) sel.removeAllRanges();
         if (ok) return true;
       }
-    } catch {}
+    } catch (e) {
+      // Ignore selection-based copy errors
+    }
 
     // Hidden textarea fallback
     try {
@@ -269,10 +272,12 @@ function App() {
       document.body.appendChild(ta);
       ta.focus();
       ta.select();
-      const ok = document.execCommand("copy");
-      document.body.removeChild(ta);
+      const ok = document.execCommand?.("copy") ?? false;
+      ta.remove();
       if (ok) return true;
-    } catch {}
+    } catch (e) {
+      // Ignore textarea copy fallback errors
+    }
 
     return false;
   };
@@ -350,7 +355,8 @@ function App() {
             return;
           }
         } catch (imgError) {
-          // Fall through to text share
+          // Fall through to text share if image share fails
+          console.warn("Image share failed:", imgError);
         }
 
         // Fallback to text share
@@ -389,11 +395,13 @@ function App() {
       document.body.appendChild(ta);
       ta.select();
       try {
-        document.execCommand("copy");
+        document.execCommand?.("copy");
         showToast("Caption copied! ✨");
         trackBrandCaptionCopy();
-      } catch {}
-      document.body.removeChild(ta);
+      } catch (e) {
+        // Ignore clipboard fallback errors
+      }
+      ta.remove();
     }
   };
 
