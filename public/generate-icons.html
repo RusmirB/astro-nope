@@ -1,262 +1,475 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Generate AstroNope Icons</title>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 20px;
-      background: #f5f5f5;
-    }
-    .container {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    h1 {
-      color: #333;
-      margin-bottom: 10px;
-    }
-    p {
-      color: #666;
-      line-height: 1.6;
-    }
-    .preview {
-      display: flex;
-      gap: 20px;
-      margin: 30px 0;
-      flex-wrap: wrap;
-    }
-    .icon-preview {
-      text-align: center;
-    }
-    canvas {
-      border: 2px solid #ddd;
-      border-radius: 8px;
-      margin: 10px 0;
-    }
-    button {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      margin: 5px;
-    }
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-    }
-    .instructions {
-      background: #f8f9fa;
-      padding: 20px;
-      border-radius: 8px;
-      margin-top: 20px;
-    }
-    .instructions h3 {
-      margin-top: 0;
-    }
-    .instructions ol {
-      line-height: 2;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>🎨 AstroNope Icon Generator</h1>
-    <p>Generate PWA icons for AstroNope. Click the buttons below to generate and download icons.</p>
-    
-    <div class="preview">
-      <div class="icon-preview">
-        <h3>192x192</h3>
-        <canvas id="icon192" width="192" height="192"></canvas>
-        <br>
-        <button onclick="downloadIcon(192)">Download icon-192.png</button>
-      </div>
-      
-      <div class="icon-preview">
-        <h3>512x512</h3>
-        <canvas id="icon512" width="512" height="512"></canvas>
-        <br>
-        <button onclick="downloadIcon(512)">Download icon-512.png</button>
-      </div>
-      
-      <div class="icon-preview">
-        <h3>OG Image (1200x630)</h3>
-        <canvas id="ogImage" width="1200" height="630" style="max-width: 300px; height: auto;"></canvas>
-        <br>
-        <button onclick="downloadOGImage()">Download og-image.png</button>
-      </div>
-    </div>
-    
-    <button onclick="generateAll()" style="background: #28a745; margin-top: 20px;">Generate All Icons</button>
-    
-    <div class="instructions">
-      <h3>📋 Instructions</h3>
-      <ol>
-        <li>Click "Generate All Icons" or individual download buttons</li>
-        <li>Icons will download automatically</li>
-        <li>Move the downloaded files to the <code>public/</code> directory:
-          <ul>
-            <li><code>icon-192.png</code> → <code>public/icon-192.png</code></li>
-            <li><code>icon-512.png</code> → <code>public/icon-512.png</code></li>
-            <li><code>og-image.png</code> → <code>public/og-image.png</code></li>
-          </ul>
-        </li>
-        <li>Rebuild and deploy: <code>npm run build && vercel --prod --yes</code></li>
-      </ol>
-    </div>
-  </div>
-
-  <script>
-    function drawIcon(canvas, size) {
-      const ctx = canvas.getContext('2d');
-      
-      // Create gradient
-      const gradient = ctx.createLinearGradient(0, 0, size, size);
-      gradient.addColorStop(0, '#667eea');
-      gradient.addColorStop(1, '#764ba2');
-      
-      // Draw background with rounded corners
-      ctx.fillStyle = gradient;
-      const radius = size * 0.2; // 20% radius for rounded corners
-      ctx.beginPath();
-      ctx.moveTo(radius, 0);
-      ctx.lineTo(size - radius, 0);
-      ctx.quadraticCurveTo(size, 0, size, radius);
-      ctx.lineTo(size, size - radius);
-      ctx.quadraticCurveTo(size, size, size - radius, size);
-      ctx.lineTo(radius, size);
-      ctx.quadraticCurveTo(0, size, 0, size - radius);
-      ctx.lineTo(0, radius);
-      ctx.quadraticCurveTo(0, 0, radius, 0);
-      ctx.closePath();
-      ctx.fill();
-      
-      // Draw stars
-      const stars = [
-        {x: size * 0.25, y: size * 0.25, r: size * 0.006},
-        {x: size * 0.75, y: size * 0.25, r: size * 0.004},
-        {x: size * 0.5, y: size * 0.39, r: size * 0.005},
-        {x: size * 0.29, y: size * 0.59, r: size * 0.004},
-        {x: size * 0.71, y: size * 0.63, r: size * 0.006},
-        {x: size * 0.39, y: size * 0.74, r: size * 0.004},
-        {x: size * 0.63, y: size * 0.78, r: size * 0.005}
-      ];
-      
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-      stars.forEach(star => {
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
-        ctx.fill();
-      });
-      
-      // Draw text "AN"
-      ctx.fillStyle = 'white';
-      ctx.font = `bold ${size * 0.35}px Arial, sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('AN', size / 2, size / 2);
-    }
-    
-    function drawOGImage(canvas) {
-      const ctx = canvas.getContext('2d');
-      const width = 1200;
-      const height = 630;
-      
-      // Create gradient background
-      const gradient = ctx.createLinearGradient(0, 0, width, height);
-      gradient.addColorStop(0, '#0a0a0f');
-      gradient.addColorStop(0.3, '#1a1a2e');
-      gradient.addColorStop(0.6, '#16213e');
-      gradient.addColorStop(1, '#0f3460');
-      
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, width, height);
-      
-      // Draw stars
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-      for (let i = 0; i < 50; i++) {
-        const x = Math.random() * width;
-        const y = Math.random() * height;
-        const size = Math.random() * 3 + 1;
-        ctx.beginPath();
-        ctx.arc(x, y, size, 0, Math.PI * 2);
-        ctx.fill();
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Generate AstroNope Icons</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+        background: #f5f5f5;
       }
-      
-      // Draw title
-      ctx.fillStyle = '#667eea';
-      ctx.font = 'bold 80px Arial, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('AstroNope', width / 2, 200);
-      
-      // Draw tagline
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-      ctx.font = 'italic 40px Arial, sans-serif';
-      ctx.fillText('When you don\'t want to explain — blame the universe.', width / 2, 280);
-      
-      // Draw sample excuse
-      ctx.fillStyle = 'white';
-      ctx.font = 'bold 36px Arial, sans-serif';
-      ctx.fillText('The planets didn\'t align for me today.', width / 2, 400);
-    }
-    
-    function downloadIcon(size) {
-      const canvas = document.getElementById(`icon${size}`);
-      canvas.toBlob((blob) => {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `icon-${size}.png`;
-        a.click();
-        URL.revokeObjectURL(url);
-      }, 'image/png');
-    }
-    
-    function downloadOGImage() {
-      const canvas = document.getElementById('ogImage');
-      canvas.toBlob((blob) => {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'og-image.png';
-        a.click();
-        URL.revokeObjectURL(url);
-      }, 'image/png');
-    }
-    
-    function generateAll() {
-      drawIcon(document.getElementById('icon192'), 192);
-      drawIcon(document.getElementById('icon512'), 512);
-      drawOGImage(document.getElementById('ogImage'));
-      
-      setTimeout(() => {
-        downloadIcon(192);
-        setTimeout(() => {
-          downloadIcon(512);
-          setTimeout(() => {
-            downloadOGImage();
-          }, 500);
-        }, 500);
-      }, 100);
-    }
-    
-    // Generate on load
-    window.addEventListener('load', () => {
-      drawIcon(document.getElementById('icon192'), 192);
-      drawIcon(document.getElementById('icon512'), 512);
-      drawOGImage(document.getElementById('ogImage'));
-    });
-  </script>
-</body>
-</html>
+      .container {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #333;
+        margin-bottom: 10px;
+      }
+      p {
+        color: #666;
+        line-height: 1.6;
+      }
+      .preview {
+        display: flex;
+        gap: 20px;
+        margin: 30px 0;
+        flex-wrap: wrap;
+      }
+      .icon-preview {
+        text-align: center;
+      }
+      canvas {
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        margin: 10px 0;
+      }
+      button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        margin: 5px;
+      }
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      }
+      .instructions {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+      }
+      .instructions h3 {
+        margin-top: 0;
+      }
+      .instructions ol {
+        line-height: 2;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🎨 AstroNope Icon Generator</h1>
+      <p>
+        Generate PWA icons for AstroNope. Click the buttons below to generate
+        and download icons.
+      </p>
 
+      <div class="preview">
+        <div class="icon-preview">
+          <h3>192x192</h3>
+          <canvas id="icon192" width="192" height="192"></canvas>
+          <br />
+          <button onclick="downloadIcon(192)">Download icon-192.png</button>
+        </div>
+
+        <div class="icon-preview">
+          <h3>512x512</h3>
+          <canvas id="icon512" width="512" height="512"></canvas>
+          <br />
+          <button onclick="downloadIcon(512)">Download icon-512.png</button>
+        </div>
+
+        <div class="icon-preview">
+          <h3>OG Image (1200x630)</h3>
+          <canvas
+            id="ogImage"
+            width="1200"
+            height="630"
+            style="max-width: 300px; height: auto"
+          ></canvas>
+          <br />
+          <button onclick="downloadOGImage()">Download og-image.png</button>
+        </div>
+      </div>
+
+      <button
+        onclick="generateAll()"
+        style="background: #28a745; margin-top: 20px"
+      >
+        Generate All Icons
+      </button>
+
+      <div class="instructions">
+        <h3>📋 Instructions</h3>
+        <ol>
+          <li>Click "Generate All Icons" or individual download buttons</li>
+          <li>Icons will download automatically</li>
+          <li>
+            Move the downloaded files to the <code>public/</code> directory:
+            <ul>
+              <li>
+                <code>icon-192.png</code> → <code>public/icon-192.png</code>
+              </li>
+              <li>
+                <code>icon-512.png</code> → <code>public/icon-512.png</code>
+              </li>
+              <li>
+                <code>og-image.png</code> → <code>public/og-image.png</code>
+              </li>
+            </ul>
+          </li>
+          <li>
+            Rebuild and deploy:
+            <code>npm run build && vercel --prod --yes</code>
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <script>
+      function drawIcon(canvas, size) {
+        const ctx = canvas.getContext("2d");
+
+        // Dark space gradient background
+        const bgGradient = ctx.createLinearGradient(0, 0, size, size);
+        bgGradient.addColorStop(0, "#0a0a0f");
+        bgGradient.addColorStop(0.5, "#1a1a2e");
+        bgGradient.addColorStop(1, "#16213e");
+
+        // Draw background with rounded corners
+        const radius = size * 0.234; // ~120px radius for 512px
+        ctx.fillStyle = bgGradient;
+        ctx.beginPath();
+        ctx.moveTo(radius, 0);
+        ctx.lineTo(size - radius, 0);
+        ctx.quadraticCurveTo(size, 0, size, radius);
+        ctx.lineTo(size, size - radius);
+        ctx.quadraticCurveTo(size, size, size - radius, size);
+        ctx.lineTo(radius, size);
+        ctx.quadraticCurveTo(0, size, 0, size - radius);
+        ctx.lineTo(0, radius);
+        ctx.quadraticCurveTo(0, 0, radius, 0);
+        ctx.closePath();
+        ctx.fill();
+
+        // Central nebula glow (radial gradient)
+        const nebulaGradient = ctx.createRadialGradient(
+          size / 2,
+          size / 2,
+          0,
+          size / 2,
+          size / 2,
+          size * 0.4
+        );
+        nebulaGradient.addColorStop(0, "rgba(102, 126, 234, 0.4)");
+        nebulaGradient.addColorStop(0.4, "rgba(118, 75, 162, 0.2)");
+        nebulaGradient.addColorStop(0.7, "rgba(102, 126, 234, 0.1)");
+        nebulaGradient.addColorStop(1, "rgba(0, 0, 0, 0)");
+        ctx.fillStyle = nebulaGradient;
+        ctx.fillRect(0, 0, size, size);
+
+        // Light rays from center
+        ctx.strokeStyle = "rgba(102, 126, 234, 0.15)";
+        ctx.lineWidth = size * 0.003;
+        const rays = [
+          { x: size * 0.88, y: size * 0.2 },
+          { x: size * 0.12, y: size * 0.29 },
+          { x: size * 0.78, y: size * 0.84 },
+          { x: size * 0.2, y: size * 0.74 },
+          { x: size * 0.94, y: size * 0.55 },
+          { x: size * 0.06, y: size * 0.59 },
+        ];
+        rays.forEach((ray, i) => {
+          ctx.beginPath();
+          ctx.moveTo(size / 2, size / 2);
+          ctx.lineTo(ray.x, ray.y);
+          ctx.strokeStyle =
+            i % 2 === 0
+              ? "rgba(102, 126, 234, 0.15)"
+              : "rgba(118, 75, 162, 0.15)";
+          ctx.stroke();
+        });
+
+        // Stars - multiple layers for depth
+        // Bright stars with glow
+        const brightStars = [
+          { x: size * 0.176, y: size * 0.156, r: size * 0.0059 },
+          { x: size * 0.82, y: size * 0.195, r: size * 0.0049 },
+          { x: size * 0.742, y: size * 0.84, r: size * 0.0059 },
+          { x: size * 0.195, y: size * 0.859, r: size * 0.0049 },
+          // Near rays (brightest)
+          { x: size * 0.742, y: size * 0.273, r: size * 0.0068 },
+          { x: size * 0.234, y: size * 0.352, r: size * 0.0059 },
+          { x: size * 0.723, y: size * 0.781, r: size * 0.0059 },
+          { x: size * 0.254, y: size * 0.703, r: size * 0.0049 },
+        ];
+
+        brightStars.forEach((star) => {
+          // Glow effect
+          const glowGrad = ctx.createRadialGradient(
+            star.x,
+            star.y,
+            0,
+            star.x,
+            star.y,
+            star.r * 3
+          );
+          glowGrad.addColorStop(0, "rgba(255, 255, 255, 0.9)");
+          glowGrad.addColorStop(0.5, "rgba(255, 255, 255, 0.3)");
+          glowGrad.addColorStop(1, "rgba(255, 255, 255, 0)");
+          ctx.fillStyle = glowGrad;
+          ctx.beginPath();
+          ctx.arc(star.x, star.y, star.r * 3, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Star core
+          ctx.fillStyle = "rgba(255, 255, 255, 1)";
+          ctx.beginPath();
+          ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        // Medium stars
+        const mediumStars = [
+          { x: size * 0.391, y: size * 0.176, r: size * 0.0039 },
+          { x: size * 0.879, y: size * 0.508, r: size * 0.0039 },
+          { x: size * 0.117, y: size * 0.547, r: size * 0.0039 },
+          { x: size * 0.293, y: size * 0.879, r: size * 0.0039 },
+          { x: size * 0.391, y: size * 0.391, r: size * 0.0039 },
+          { x: size * 0.625, y: size * 0.371, r: size * 0.0039 },
+          { x: size * 0.352, y: size * 0.645, r: size * 0.0039 },
+          { x: size * 0.664, y: size * 0.625, r: size * 0.0039 },
+        ];
+
+        ctx.fillStyle = "rgba(224, 224, 255, 0.8)";
+        mediumStars.forEach((star) => {
+          ctx.beginPath();
+          ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        // Small distant stars
+        const smallStars = [
+          { x: size * 0.273, y: size * 0.273, r: size * 0.0029 },
+          { x: size * 0.625, y: size * 0.215, r: size * 0.0029 },
+          { x: size * 0.938, y: size * 0.371, r: size * 0.0029 },
+          { x: size * 0.059, y: size * 0.391, r: size * 0.0029 },
+          { x: size * 0.918, y: size * 0.723, r: size * 0.0029 },
+          { x: size * 0.488, y: size * 0.898, r: size * 0.0029 },
+        ];
+
+        ctx.fillStyle = "rgba(208, 208, 255, 0.6)";
+        smallStars.forEach((star) => {
+          ctx.beginPath();
+          ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        // Cosmic glow behind text
+        ctx.save();
+        ctx.shadowColor = "rgba(102, 126, 234, 0.6)";
+        ctx.shadowBlur = size * 0.04;
+        ctx.fillStyle = "rgba(102, 126, 234, 0.4)";
+        ctx.font = `900 ${
+          size * 0.391
+        }px system-ui, -apple-system, 'Segoe UI', Arial, sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("AN", size / 2, size / 2);
+        ctx.restore();
+
+        // AN text - main layer
+        ctx.fillStyle = "white";
+        ctx.font = `900 ${
+          size * 0.391
+        }px system-ui, -apple-system, 'Segoe UI', Arial, sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("AN", size / 2, size / 2);
+      }
+
+      function drawOGImage(canvas) {
+        const ctx = canvas.getContext("2d");
+        const width = 1200;
+        const height = 630;
+
+        // Dark space gradient background
+        const gradient = ctx.createLinearGradient(0, 0, width, height);
+        gradient.addColorStop(0, "#0a0a0f");
+        gradient.addColorStop(0.5, "#1a1a2e");
+        gradient.addColorStop(1, "#16213e");
+
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, width, height);
+
+        // Central nebula glow
+        const nebulaGradient = ctx.createRadialGradient(
+          width / 2,
+          height / 2,
+          0,
+          width / 2,
+          height / 2,
+          400
+        );
+        nebulaGradient.addColorStop(0, "rgba(102, 126, 234, 0.4)");
+        nebulaGradient.addColorStop(0.4, "rgba(118, 75, 162, 0.2)");
+        nebulaGradient.addColorStop(0.7, "rgba(102, 126, 234, 0.1)");
+        nebulaGradient.addColorStop(1, "rgba(0, 0, 0, 0)");
+        ctx.fillStyle = nebulaGradient;
+        ctx.fillRect(0, 0, width, height);
+
+        // Light rays from center (subtle)
+        ctx.strokeStyle = "rgba(102, 126, 234, 0.08)";
+        ctx.lineWidth = 1.5;
+        const rays = [
+          { x: width * 0.88, y: height * 0.2 },
+          { x: width * 0.12, y: height * 0.29 },
+          { x: width * 0.78, y: height * 0.84 },
+          { x: width * 0.2, y: height * 0.74 },
+          { x: width * 0.94, y: height * 0.55 },
+          { x: width * 0.06, y: height * 0.59 },
+        ];
+        rays.forEach((ray, i) => {
+          ctx.beginPath();
+          ctx.moveTo(width / 2, height / 2);
+          ctx.lineTo(ray.x, ray.y);
+          ctx.strokeStyle =
+            i % 2 === 0
+              ? "rgba(102, 126, 234, 0.08)"
+              : "rgba(118, 75, 162, 0.08)";
+          ctx.stroke();
+        });
+
+        // Draw stars with varying sizes and opacity
+        for (let i = 0; i < 80; i++) {
+          const x = Math.random() * width;
+          const y = Math.random() * height;
+          const size = Math.random() * 3 + 1;
+          const opacity = Math.random() * 0.5 + 0.5;
+          ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+          ctx.beginPath();
+          ctx.arc(x, y, size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Star emoji before title (using actual star shape)
+        ctx.save();
+        ctx.shadowColor = "rgba(255, 215, 0, 0.8)";
+        ctx.shadowBlur = 15;
+        ctx.fillStyle = "#FFD700";
+
+        // Draw 4-pointed star - positioned to the left
+        const starX = width / 2 - 250;
+        const starY = 115;
+        const spikes = 4;
+        const outerRadius = 35;
+        const innerRadius = 15;
+
+        ctx.beginPath();
+        for (let i = 0; i < spikes * 2; i++) {
+          const radius = i % 2 === 0 ? outerRadius : innerRadius;
+          const angle = (i * Math.PI) / spikes - Math.PI / 2;
+          const x = starX + Math.cos(angle) * radius;
+          const y = starY + Math.sin(angle) * radius;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+
+        // Main title - AstroNope
+        ctx.fillStyle = "white";
+        ctx.font =
+          '700 80px system-ui, -apple-system, "Segoe UI", Arial, sans-serif';
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("AstroNope", width / 2, 120);
+
+        // Subtitle - Your Daily Cosmic Excuse
+        ctx.fillStyle = "white";
+        ctx.font =
+          '600 56px system-ui, -apple-system, "Segoe UI", Arial, sans-serif';
+        ctx.textAlign = "center";
+        ctx.fillText("Your Daily Cosmic Excuse", width / 2, 280);
+
+        // Tagline - elegant two-line format
+        ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+        ctx.font =
+          '400 36px system-ui, -apple-system, "Segoe UI", Arial, sans-serif';
+        ctx.textAlign = "center";
+        ctx.fillText("When you don't want to explain,", width / 2, 385);
+
+        ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+        ctx.fillText("blame the universe.", width / 2, 435);
+
+        // Website URL at bottom
+        ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+        ctx.font =
+          '400 32px system-ui, -apple-system, "Segoe UI", Arial, sans-serif';
+        ctx.textAlign = "center";
+        ctx.fillText("astronope.com", width / 2, 565);
+      }
+
+      function downloadIcon(size) {
+        const canvas = document.getElementById(`icon${size}`);
+        canvas.toBlob((blob) => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `icon-${size}.png`;
+          a.click();
+          URL.revokeObjectURL(url);
+        }, "image/png");
+      }
+
+      function downloadOGImage() {
+        const canvas = document.getElementById("ogImage");
+        canvas.toBlob((blob) => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "og-image.png";
+          a.click();
+          URL.revokeObjectURL(url);
+        }, "image/png");
+      }
+
+      function generateAll() {
+        drawIcon(document.getElementById("icon192"), 192);
+        drawIcon(document.getElementById("icon512"), 512);
+        drawOGImage(document.getElementById("ogImage"));
+
+        setTimeout(() => {
+          downloadIcon(192);
+          setTimeout(() => {
+            downloadIcon(512);
+            setTimeout(() => {
+              downloadOGImage();
+            }, 500);
+          }, 500);
+        }, 100);
+      }
+
+      // Generate on load
+      window.addEventListener("load", () => {
+        drawIcon(document.getElementById("icon192"), 192);
+        drawIcon(document.getElementById("icon512"), 512);
+        drawOGImage(document.getElementById("ogImage"));
+      });
+    </script>
+  </body>
+</html>

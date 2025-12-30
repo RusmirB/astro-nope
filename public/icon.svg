@@ -1,20 +1,111 @@
 <svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    <!-- Dark space gradient background -->
+    <linearGradient id="spaceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a0f;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
     </linearGradient>
+    
+    <!-- Radial glow from center (nebula effect) -->
+    <radialGradient id="nebulaGlow" cx="50%" cy="50%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:0.4" />
+      <stop offset="40%" style="stop-color:#764ba2;stop-opacity:0.2" />
+      <stop offset="70%" style="stop-color:#667eea;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:0" />
+    </radialGradient>
+    
+    <!-- Star glow filter -->
+    <filter id="starGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    
+    <!-- Strong glow for center -->
+    <filter id="strongGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
   </defs>
-  <rect width="512" height="512" fill="url(#grad)" rx="100"/>
-  <!-- Stars -->
-  <circle cx="128" cy="128" r="3" fill="white" opacity="0.9"/>
-  <circle cx="384" cy="128" r="2" fill="white" opacity="0.8"/>
-  <circle cx="256" cy="200" r="2.5" fill="white" opacity="0.7"/>
-  <circle cx="150" cy="300" r="2" fill="white" opacity="0.8"/>
-  <circle cx="362" cy="320" r="3" fill="white" opacity="0.9"/>
-  <circle cx="200" cy="380" r="2" fill="white" opacity="0.7"/>
-  <circle cx="320" cy="400" r="2.5" fill="white" opacity="0.8"/>
-  <!-- Text -->
-  <text x="256" y="320" font-family="Arial, sans-serif" font-size="180" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="middle">AN</text>
+  
+  <!-- Background -->
+  <rect width="512" height="512" fill="url(#spaceGrad)" rx="120"/>
+  
+  <!-- Central nebula glow -->
+  <circle cx="256" cy="256" r="200" fill="url(#nebulaGlow)" opacity="0.6"/>
+  
+  <!-- Light rays emanating from center -->
+  <line x1="256" y1="256" x2="450" y2="100" stroke="#667eea" stroke-width="1.5" opacity="0.15"/>
+  <line x1="256" y1="256" x2="60" y2="150" stroke="#764ba2" stroke-width="1.5" opacity="0.15"/>
+  <line x1="256" y1="256" x2="400" y2="430" stroke="#667eea" stroke-width="1.5" opacity="0.12"/>
+  <line x1="256" y1="256" x2="100" y2="380" stroke="#764ba2" stroke-width="1.5" opacity="0.12"/>
+  <line x1="256" y1="256" x2="480" y2="280" stroke="#667eea" stroke-width="1" opacity="0.1"/>
+  <line x1="256" y1="256" x2="30" y2="300" stroke="#764ba2" stroke-width="1" opacity="0.1"/>
+  
+  <!-- Stars - scattered realistically with some clustering around center -->
+  <!-- Stars near the rays (brightest) -->
+  <circle cx="380" cy="140" r="3.5" fill="#ffffff" opacity="1" filter="url(#strongGlow)"/>
+  <circle cx="120" cy="180" r="3" fill="#ffffff" opacity="0.95" filter="url(#starGlow)"/>
+  <circle cx="370" cy="400" r="3" fill="#ffffff" opacity="1" filter="url(#starGlow)"/>
+  <circle cx="130" cy="360" r="2.5" fill="#ffffff" opacity="0.9" filter="url(#starGlow)"/>
+  
+  <!-- Bright outer stars -->
+  <circle cx="90" cy="80" r="3" fill="#ffffff" opacity="1" filter="url(#starGlow)"/>
+  <circle cx="420" cy="100" r="2.5" fill="#ffffff" opacity="0.95" filter="url(#starGlow)"/>
+  <circle cx="380" cy="430" r="3" fill="#ffffff" opacity="1" filter="url(#starGlow)"/>
+  <circle cx="100" cy="440" r="2.5" fill="#ffffff" opacity="0.9" filter="url(#starGlow)"/>
+  
+  <!-- Medium stars around center -->
+  <circle cx="200" cy="200" r="2" fill="#e0e0ff" opacity="0.85"/>
+  <circle cx="320" cy="190" r="2" fill="#e0e0ff" opacity="0.8"/>
+  <circle cx="180" cy="330" r="2" fill="#e0e0ff" opacity="0.85"/>
+  <circle cx="340" cy="320" r="2" fill="#e0e0ff" opacity="0.8"/>
+  
+  <!-- Medium stars outer -->
+  <circle cx="200" cy="90" r="2" fill="#e0e0ff" opacity="0.8"/>
+  <circle cx="450" cy="260" r="2" fill="#e0e0ff" opacity="0.75"/>
+  <circle cx="60" cy="280" r="2" fill="#e0e0ff" opacity="0.85"/>
+  <circle cx="150" cy="450" r="2" fill="#e0e0ff" opacity="0.8"/>
+  
+  <!-- Small distant stars -->
+  <circle cx="140" cy="140" r="1.5" fill="#d0d0ff" opacity="0.6"/>
+  <circle cx="320" cy="110" r="1.5" fill="#d0d0ff" opacity="0.65"/>
+  <circle cx="480" cy="190" r="1.5" fill="#d0d0ff" opacity="0.6"/>
+  <circle cx="30" cy="200" r="1.5" fill="#d0d0ff" opacity="0.55"/>
+  <circle cx="470" cy="370" r="1.5" fill="#d0d0ff" opacity="0.6"/>
+  <circle cx="250" cy="460" r="1.5" fill="#d0d0ff" opacity="0.65"/>
+  
+  <!-- Tiny stars for depth -->
+  <circle cx="180" cy="180" r="1" fill="#c0c0ff" opacity="0.4"/>
+  <circle cx="360" cy="200" r="1" fill="#c0c0ff" opacity="0.45"/>
+  <circle cx="280" cy="90" r="1" fill="#c0c0ff" opacity="0.4"/>
+  <circle cx="120" cy="350" r="1" fill="#c0c0ff" opacity="0.4"/>
+  <circle cx="400" cy="320" r="1" fill="#c0c0ff" opacity="0.45"/>
+  
+  <!-- Subtle glow layer behind text (cosmic energy) -->
+  <text 
+    x="256" 
+    y="256" 
+    font-family="system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" 
+    font-size="200" 
+    font-weight="900" 
+    fill="#667eea" 
+    opacity="0.4"
+    filter="url(#strongGlow)"
+    text-anchor="middle" 
+    dominant-baseline="central"
+    letter-spacing="-5">AN</text>
+    
+  <!-- AN Text - Perfectly centered (main layer) -->
+  <text 
+    x="256" 
+    y="256" 
+    font-family="system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" 
+    font-size="200" 
+    font-weight="900" 
+    fill="#ffffff" 
+    text-anchor="middle" 
+    dominant-baseline="central"
+    letter-spacing="-5">AN</text>
 </svg>
 
