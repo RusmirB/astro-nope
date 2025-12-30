@@ -362,18 +362,102 @@ export const FALLBACK_EXCUSES = Array.from({ length: 100 }, (_, i) =>
 const recentExcuses = [];
 const MAX_RECENT = 5;
 
+// Multi-date override for Dec 31 and Jan 1 (core + zodiac flavor)
+const OVERRIDE_DATES = [
+  { month: 11, day: 31, year: 2025, key: "dec31" },
+  { month: 0, day: 1, year: 2026, key: "jan1" },
+];
+
+const OVERRIDE_CORE = {
+  dec31: [
+    "Pass. Universe reached year-end storage limit. Done.",
+    "Skip. Celestial bandwidth capped at 2025. Period.",
+    "Nope. Mercury is out of office until 2026. Final.",
+  ],
+  jan1: [
+    "Denied. System reboot in progress. Try 2027.",
+    "Hard pass. Sun is on a coffee break. Period.",
+    "Declined. Orbit currently under maintenance. Moving on.",
+  ],
+};
+
+const OVERRIDE_ZODIAC_FLAVORS = {
+  dec31: {
+    aries: "Year-end, still not interested.",
+    taurus: "Hibernate mode: enabled.",
+    gemini: "Too many plans, none happening.",
+    cancer: "Emotionally checked out for 2025.",
+    leo: "Curtain closed for the year.",
+    virgo: "Inbox zero, energy zero.",
+    libra: "Balancing nothing tonight.",
+    scorpio: "Ghosting the year’s end.",
+    sagittarius: "Passport expired. Staying in.",
+    capricorn: "Career goal: surviving today.",
+    aquarius: "Out of orbit until next year.",
+    pisces: "Already dreaming of 2027.",
+  },
+  jan1: {
+    aries: "New year, same attitude.",
+    taurus: "Resolution: strictly more naps.",
+    gemini: "Already over the small talk.",
+    cancer: "Shell closed for maintenance.",
+    leo: "Main character needs a stunt double.",
+    virgo: "No new tasks accepted.",
+    libra: "Weighing options: still no.",
+    scorpio: "Plotting, not participating.",
+    sagittarius: "Not traveling into 2026 yet.",
+    capricorn: "Climbing back into bed.",
+    aquarius: "Innovating new ways to say no.",
+    pisces: "Dreaming through the reboot.",
+  },
+};
+
+function getOverrideKeyForDate(date) {
+  for (const d of OVERRIDE_DATES) {
+    if (
+      date.getFullYear() === d.year &&
+      date.getMonth() === d.month &&
+      date.getDate() === d.day
+    ) {
+      return d.key;
+    }
+  }
+  return null;
+}
+
+// Returns { core, flavor } if override applies, else null
+export function getSpecialYearEndOverride(selectedZodiac = null) {
+  const now = new Date();
+  const key = getOverrideKeyForDate(now);
+  if (!key) return null;
+  // Deterministically pick a core message for the day
+  const coreList = OVERRIDE_CORE[key];
+  const idx = now.getDate() % coreList.length;
+  const core = coreList[idx];
+  let flavor = null;
+  if (selectedZodiac) {
+    const zodiacKey = selectedZodiac.toLowerCase();
+    flavor = OVERRIDE_ZODIAC_FLAVORS[key]?.[zodiacKey] || null;
+  }
+  return { core, flavor };
+}
+
 // Generate personalized fingerprint-based excuse (respects user's vibe)
-export function generatePersonalizedExcuse(seedOverride = null) {
+// Accepts optional selectedZodiac for override flavor
+export function generatePersonalizedExcuse(
+  seedOverride = null,
+  selectedZodiac = null
+) {
+  const special = getSpecialYearEndOverride(selectedZodiac);
+  if (special) {
+    // If flavor exists, return as "core flavor" (for splitExcuseWithFlavor)
+    if (special.flavor) return `${special.core} ${special.flavor}`;
+    return special.core;
+  }
   const fingerprint = getCosmicFingerprint();
   const vibe = getVibeForUser(fingerprint);
-
-  // Get personalized reason pool for this user (REASON_ROTATION)
   const reasonPool = getReasonPoolForFingerprint(fingerprint);
-
-  // Use provided seed or fingerprint as seed for deterministic but unique excuse
-  // Different users get different excuses at same time
-  const seed = seedOverride === null ? fingerprint * 7919 : seedOverride; // Prime multiplier for better distribution
-
+  const seed = seedOverride === null ? fingerprint * 7919 : seedOverride;
   return composeExcuse(seed, vibe, reasonPool);
 }
 
