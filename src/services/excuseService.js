@@ -75,7 +75,7 @@ export const TIME_CONTEXTS = {
   MORNING: { label: "Morning Excuse", time: "5-12", emoji: "☀️" },
   AFTERNOON: { label: "Afternoon Excuse", time: "12-17", emoji: "📅" },
   EVENING: { label: "Evening Excuse", time: "17-21", emoji: "🌆" },
-  NIGHT: { label: "Night Excuse", time: "21-5", emoji: "🌙" }
+  NIGHT: { label: "Night Excuse", time: "21-5", emoji: "🌙" },
 };
 
 // Get current time context
@@ -399,7 +399,7 @@ export function generatePersonalizedExcuse(seedOverride = null) {
 export function generateContextAwareExcuse(baseSeed) {
   const hour = new Date().getHours();
   let contextModifier;
-  
+
   // Add different prime multiplier for each time period
   if (hour >= 5 && hour < 12) {
     contextModifier = 11; // Morning
@@ -410,14 +410,14 @@ export function generateContextAwareExcuse(baseSeed) {
   } else {
     contextModifier = 19; // Night
   }
-  
+
   const fingerprint = getCosmicFingerprint();
   const vibe = getVibeForUser(fingerprint);
   const reasonPool = getReasonPoolForFingerprint(fingerprint);
-  
+
   // Modify seed with context multiplier to get different excuse for same day
   const contextSeed = baseSeed * contextModifier;
-  
+
   return composeExcuse(contextSeed, vibe, reasonPool);
 }
 

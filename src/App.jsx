@@ -144,6 +144,24 @@ function App() {
     trackPageView("home");
     updateStreak();
     setTimeout(() => setShowUniverseIntro(false), 2000);
+
+    // DEV ONLY: Clear Service Worker cache on localhost
+    if (
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1"
+    ) {
+      navigator.serviceWorker?.getRegistrations().then((registrations) => {
+        registrations.forEach((registration) => {
+          registration.unregister();
+          console.log("🧹 Service Worker unregistered for dev mode");
+        });
+      });
+      caches?.keys().then((names) => {
+        names.forEach((name) => caches.delete(name));
+        console.log("🧹 Cache cleared for dev mode");
+      });
+    }
+
     // Preload base seed from localStorage to avoid flicker
     try {
       const saved = JSON.parse(
@@ -287,26 +305,32 @@ function App() {
   };
 
   const maybeShowBrandCaption = () => {
-    if (hasBrandCaptionShown()) return;
+    // Always increment share count for merch banner tracking
     const vibe = getUserVibe();
-    const shareCount = incrementSessionShareCount();
-    const caption = getSuggestedBrandCaption(vibe, shareCount);
-    setBrandCaption(caption);
-    setShowBrandCaption(true);
-    // Auto-hide after 30s
-    if (brandCaptionTimer) clearTimeout(brandCaptionTimer);
-    const t = setTimeout(() => setShowBrandCaption(false), 30000);
-    setBrandCaptionTimer(t);
-    markBrandCaptionShown();
-    trackBrandCaptionShown();
-    
+    const currentShareCount = incrementSessionShareCount();
+    setShareCount(currentShareCount);
+
+    // Show brand caption only once per session
+    if (!hasBrandCaptionShown()) {
+      const caption = getSuggestedBrandCaption(vibe, currentShareCount);
+      setBrandCaption(caption);
+      setShowBrandCaption(true);
+      // Auto-hide after 30s
+      if (brandCaptionTimer) clearTimeout(brandCaptionTimer);
+      const t = setTimeout(() => setShowBrandCaption(false), 30000);
+      setBrandCaptionTimer(t);
+      markBrandCaptionShown();
+      trackBrandCaptionShown();
+    }
+
     // Check if we should show merch banner (after 3+ shares)
-    const newCount = shareCount;
-    setShareCount(newCount);
-    if (newCount >= 3 && !localStorage.getItem('astronope_merch_shown')) {
+    if (
+      currentShareCount >= 3 &&
+      !localStorage.getItem("astronope_merch_shown")
+    ) {
       setTimeout(() => {
         setShowMerchBanner(true);
-        localStorage.setItem('astronope_merch_shown', 'true');
+        localStorage.setItem("astronope_merch_shown", "true");
       }, 2000);
     }
   };
@@ -580,7 +604,7 @@ function App() {
       {/* Streak Counter - Top Left */}
       {streak > 0 && (
         <div className="streak-counter" title={`${streak} day streak`}>
-          {streak >= 3 ? "🔥" : "⭐"} {streak}
+          {streak >= 3 ? "🔥" : "⚡"} {streak}
         </div>
       )}
 
@@ -604,7 +628,9 @@ function App() {
 
                   {isDailyMessage && (
                     <div className="daily-label">
-                      {showContextExcuse ? timeContext.label : "This is your AstroNope today"}
+                      {showContextExcuse
+                        ? timeContext.label
+                        : "This is your AstroNope today"}
                     </div>
                   )}
                   <div className="excuse-text">
@@ -648,17 +674,25 @@ function App() {
               ? `Change zodiac (${selectedZodiac}) ✨`
               : "Blame my zodiac ✨"}
           </button>
-          
+
           {/* Context Toggle Button */}
           <button
             className="btn-context-toggle"
             onClick={() => {
               setShowContextExcuse(!showContextExcuse);
               setTimeContext(getCurrentTimeContext());
-              showToast(showContextExcuse ? "Daily excuse" : `${getCurrentTimeContext().label}`);
+              showToast(
+                showContextExcuse
+                  ? "Daily excuse"
+                  : `${getCurrentTimeContext().label}`
+              );
             }}
             disabled={isLoading || !baseSeed}
-            title={showContextExcuse ? "Show daily excuse" : "Show excuse for this time"}
+            title={
+              showContextExcuse
+                ? "Show daily excuse"
+                : "Show excuse for this time"
+            }
           >
             {showContextExcuse ? "📅 Daily" : `${timeContext.emoji} Now`}
           </button>
@@ -758,7 +792,7 @@ function App() {
         {/* Merch Banner - Show after 3+ shares */}
         {showMerchBanner && (
           <div className="merch-banner">
-            <button 
+            <button
               className="merch-banner-close"
               onClick={() => setShowMerchBanner(false)}
               aria-label="Close merch banner"
@@ -768,19 +802,19 @@ function App() {
             <div className="merch-banner-content">
               <div className="merch-banner-title">🌌 Wear Your Excuse</div>
               <p className="merch-banner-text">
-                {getBaseExcuse().split('.')[0]} on a t-shirt? Why not.
+                {getBaseExcuse().split(".")[0]} on a t-shirt? Why not.
               </p>
-              <a 
-                href="https://astronope.com/merch" 
-                target="_blank" 
+              <a
+                href="https://astronope.com/merch"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="merch-banner-button"
                 onClick={() => {
                   // Track merch click
-                  if (typeof window !== 'undefined' && window.gtag) {
-                    window.gtag('event', 'merch_click', {
-                      event_category: 'Monetization',
-                      event_label: 'Merch Banner Click'
+                  if (typeof window !== "undefined" && window.gtag) {
+                    window.gtag("event", "merch_click", {
+                      event_category: "Monetization",
+                      event_label: "Merch Banner Click",
                     });
                   }
                 }}
