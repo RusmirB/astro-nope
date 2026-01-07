@@ -70,6 +70,56 @@ function mulberry32(seed) {
   };
 }
 
+// Contextual modifiers that add time/day-aware humor
+function getContextualModifier(rng) {
+  const now = new Date();
+  const hour = now.getHours();
+  const day = now.getDay();
+  const modifiers = [];
+
+  // Time-based modifiers
+  if (hour >= 5 && hour < 9) modifiers.push("this early", "before coffee");
+  if (hour >= 22 || hour < 5) modifiers.push("this late", "after hours");
+  if (hour >= 12 && hour < 14) modifiers.push("during lunch");
+
+  // Day-based modifiers
+  if (day === 1) modifiers.push("on a Monday", "after the weekend");
+  if (day === 5) modifiers.push("before the weekend", "on a Friday");
+  if (day === 0 || day === 6) modifiers.push("on the weekend");
+
+  // Return random modifier or empty (40% chance of adding context)
+  if (modifiers.length > 0 && rng() < 0.4) {
+    return modifiers[Math.floor(rng() * modifiers.length)];
+  }
+  return null;
+}
+
+// Word substitution for dynamic variety
+const WORD_VARIANTS = {
+  "can't": ["won't", "cannot", "unable to", "refusing to"],
+  today: ["right now", "currently", "at this time", "at the moment"],
+  not: ["absolutely not", "definitely not", "hard no on"],
+  no: ["nope", "nah", "negative", "pass"],
+  pass: ["skip", "decline", "bounce"],
+};
+
+function applyWordVariation(text, rng, variantChance = 0.3) {
+  if (rng() > variantChance) return text;
+
+  let result = text;
+  const lowerText = text.toLowerCase();
+
+  for (const [word, variants] of Object.entries(WORD_VARIANTS)) {
+    if (lowerText.includes(word)) {
+      const replacement = variants[Math.floor(rng() * variants.length)];
+      const regex = new RegExp(String.raw`\b${word}\b`, "i");
+      result = result.replace(regex, replacement);
+      break; // Only replace one word per excuse
+    }
+  }
+  return result;
+}
+
 // Generate cosmic fingerprint (timezone + time-of-day + calendar + device seed)
 export function getCosmicFingerprint() {
   const now = new Date();
@@ -148,6 +198,15 @@ const SETUPS = [
   { text: "Not available.", tones: [TONE.DRY] },
   { text: "Passing.", tones: [TONE.DRY] },
   { text: "Skipped.", tones: [TONE.DRY] },
+  // Playful additions
+  { text: "Not a chance.", tones: [TONE.PLAYFUL, TONE.DRY] },
+  { text: "Request denied.", tones: [TONE.DRY] },
+  { text: "Status: offline.", tones: [TONE.DRY] },
+  { text: "Unsubscribed.", tones: [TONE.DRY, TONE.PLAYFUL] },
+  { text: "Can't. Won't.", tones: [TONE.DRY] },
+  { text: "Absolutely not.", tones: [TONE.DRY] },
+  { text: "Out of office.", tones: [TONE.DRY, TONE.CASUAL] },
+  { text: "Currently refusing.", tones: [TONE.DRY] },
 ];
 
 // Layer 2: AI-GENERATED MICRO-REASONS (from offline pool)
@@ -297,6 +356,7 @@ function vibeMatchesPreference(vibePreference, commonTone) {
 
 // Compose excuse using seeded RNG (with optional vibe preference)
 // Now uses AI_REASONS from pool instead of hardcoded ABSURDITIES
+// Enhanced with contextual modifiers and word variation
 function composeExcuse(seed, vibePreference = null, reasonPool = null) {
   const rng = mulberry32(seed);
   const maxAttempts = 10;
@@ -328,16 +388,40 @@ function composeExcuse(seed, vibePreference = null, reasonPool = null) {
 
     // Check vibe match
     if (vibeMatchesPreference(vibePreference, commonTone)) {
-      const reasonText =
+      let reasonText =
         reason.text.charAt(0).toUpperCase() + reason.text.slice(1);
-      return `${setup.text} ${reasonText}. ${punchline.text}`;
+      let setupText = setup.text;
+      let punchText = punchline.text;
+
+      // Apply word variation (30% chance)
+      reasonText = applyWordVariation(reasonText, rng, 0.3);
+
+      // Add contextual modifier (40% chance)
+      const modifier = getContextualModifier(rng);
+      if (modifier) {
+        return `${setupText} ${reasonText} ${modifier}. ${punchText}`;
+      }
+
+      return `${setupText} ${reasonText}. ${punchText}`;
     }
 
     // Accept if tone matches even without perfect vibe match
     if (commonTone) {
-      const reasonText =
+      let reasonText =
         reason.text.charAt(0).toUpperCase() + reason.text.slice(1);
-      return `${setup.text} ${reasonText}. ${punchline.text}`;
+      let setupText = setup.text;
+      let punchText = punchline.text;
+
+      // Apply word variation (30% chance)
+      reasonText = applyWordVariation(reasonText, rng, 0.3);
+
+      // Add contextual modifier (40% chance)
+      const modifier = getContextualModifier(rng);
+      if (modifier) {
+        return `${setupText} ${reasonText} ${modifier}. ${punchText}`;
+      }
+
+      return `${setupText} ${reasonText}. ${punchText}`;
     }
   }
 
